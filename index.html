@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GRE Lexicon">
+<meta name="theme-color" content="#0B0C0E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>GRE Lexicon</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+<style>
+/* Layout: una colonna da telefono (max 520px), schede antracite su fondo quasi nero, tab bar fissa in basso. Stessa impronta di Elevate (tema scuro scelto di proposito). */
+:root{
+  --bg:#0B0C0E; --card:#16181C; --raised:#1F2228; --sep:rgba(255,255,255,.08); --track:rgba(255,255,255,.08);
+  --fg:#F2F3F5; --fg2:#A3A8B1; --fg3:#6B717C;
+  --accent:#4D7BFF; --accent-soft:rgba(77,123,255,.16);
+  --goal:#FF9F43; --mastery:#3EE6A8; --streak:#9A8CFF; --bad:#FF6B6B;
+  --goal-soft:rgba(255,159,67,.15); --mastery-soft:rgba(62,230,168,.14); --streak-soft:rgba(154,140,255,.16); --bad-soft:rgba(255,107,107,.15);
+  --bar:rgba(11,12,14,.88);
+  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;
+  --read:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:16px;line-height:1.4;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(100px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-top:6px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--fg2);text-transform:capitalize}
+h1{margin:2px 0 0;font-size:32px;font-weight:700;letter-spacing:-.02em}
+h2.sec{margin:10px 0 -4px;font-size:20px;font-weight:700;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:baseline}
+h2.sec small{font-size:13px;font-weight:500;color:var(--fg2)}
+.icon-btn{width:40px;height:40px;border-radius:50%;background:var(--card);display:grid;place-items:center;color:var(--fg2)}
+.icon-btn svg{width:20px;height:20px}
+.card{background:var(--card);border-radius:20px;padding:16px;width:100%}
+.muted{color:var(--fg2)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* Rings */
+.rings{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:18px 8px 14px}
+.ring-btn{display:flex;flex-direction:column;align-items:center;gap:8px;border-radius:14px;padding:4px 0}
+.ring-wrap{position:relative;width:92px;height:92px;max-width:100%}
+.ring-wrap svg{display:block;width:100%;height:100%}
+.ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:22px;font-variant-numeric:tabular-nums;line-height:1}
+.ring-val small{font-size:11px;font-weight:600;color:var(--fg2);margin-top:3px}
+.ring-lbl{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.coach{margin:0;font-size:15px;color:var(--fg2);padding:0 4px;text-wrap:pretty}
+.coach b{color:var(--fg);font-weight:600}
+
+/* CTA */
+.cta{display:flex;align-items:center;gap:14px;padding:16px;background:var(--accent);color:#fff;border-radius:20px;width:100%}
+.cta .ic{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+.cta .ic svg{width:22px;height:22px}
+.cta .t{font-weight:700;font-size:17px}
+.cta .s{font-size:13px;opacity:.85}
+.cta .chev{margin-left:auto;opacity:.8}
+.cta[disabled]{background:var(--card);color:var(--fg2);cursor:default}
+.row-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px;background:var(--card);border-radius:16px}
+.row-btn .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+.row-btn .ic svg{width:19px;height:19px}
+.row-btn .t{font-weight:600;font-size:15px}
+.row-btn .s{font-size:13px;color:var(--fg2)}
+.row-btn .chev{margin-left:auto;color:var(--fg3);flex:none}
+.row-btn[disabled]{opacity:.45;cursor:default}
+.stack{display:flex;flex-direction:column;gap:8px}
+
+/* Monitor tiles */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--card);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile .k{font-size:12px;font-weight:600;color:var(--fg2);line-height:1.2}
+.tile .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1}
+.tile .v small{font-size:13px;font-weight:600;color:var(--fg2)}
+.tile .pill{align-self:flex-start}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.p-new{background:var(--raised);color:var(--fg2)}
+.p-learning{background:var(--goal-soft);color:var(--goal)}
+.p-review{background:var(--accent-soft);color:#86A6FF}
+.p-mastered{background:var(--mastery-soft);color:var(--mastery)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+
+/* Chart */
+.chart svg{display:block;width:100%;height:auto}
+.chart-cap{display:flex;justify-content:space-between;font-size:13px;color:var(--fg2);margin-bottom:8px}
+.chart-cap b{color:var(--fg);font-variant-numeric:tabular-nums}
+
+/* Word of the day */
+.wotd{display:flex;flex-direction:column;gap:6px;text-align:left}
+.wotd .w{font-family:var(--read);font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.1}
+.wotd .d{font-size:15px;color:var(--fg2)}
+.pron{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--fg2)}
+.pron .resp{font-weight:600;color:var(--fg);letter-spacing:.02em}
+.speak{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:#86A6FF;display:inline-grid;place-items:center;flex:none}
+.speak svg{width:17px;height:17px}
+
+/* Word list */
+.wlist{background:var(--card);border-radius:20px;overflow:hidden}
+.witem{display:flex;align-items:center;gap:12px;padding:13px 16px;width:100%;border-top:1px solid var(--sep)}
+.witem:first-child{border-top:0}
+.witem .main{min-width:0;flex:1}
+.witem .w{font-family:var(--read);font-size:19px;font-weight:500}
+.witem .w em{font-family:var(--ui);font-style:normal;font-size:12px;color:var(--fg3);margin-left:6px;font-weight:500}
+.witem .it{font-size:13px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.witem .side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.witem .nx{font-size:12px;color:var(--fg3);font-variant-numeric:tabular-nums}
+.empty{padding:18px 16px;color:var(--fg2);font-size:14px}
+
+/* Search + chips */
+.search{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:14px;padding:0 12px}
+.search svg{width:18px;height:18px;color:var(--fg3);flex:none}
+.search input{flex:1;min-width:0;background:none;border:0;color:var(--fg);font:inherit;padding:12px 0;outline:none}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 12px;border-radius:999px;background:var(--card);font-size:13px;font-weight:600;color:var(--fg2);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.chip .n{opacity:.6;margin-left:4px;font-variant-numeric:tabular-nums}
+
+/* Segmented */
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--raised);border-radius:12px;padding:3px;gap:2px}
+.seg button{padding:8px 4px;border-radius:9px;text-align:center;font-size:14px;font-weight:600;color:var(--fg2);font-variant-numeric:tabular-nums}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.set-row{display:flex;flex-direction:column;gap:8px;padding:14px 0;border-top:1px solid var(--sep)}
+.set-row:first-of-type{border-top:0}
+.set-row .lbl{font-weight:600;font-size:15px}
+.set-row .hint{font-size:13px;color:var(--fg2)}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.switch{width:51px;height:31px;border-radius:999px;background:var(--raised);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--mastery)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.danger{width:100%;padding:13px;border-radius:14px;background:var(--bad-soft);color:var(--bad);font-weight:600;text-align:center}
+
+/* Mode cards (quiz) */
+.mode{display:flex;flex-direction:column;gap:6px;padding:16px;background:var(--card);border-radius:20px;width:100%;border:2px solid transparent}
+.mode[aria-pressed="true"]{border-color:var(--accent)}
+.mode .h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mode .t{font-weight:700;font-size:16px}
+.mode .s{font-size:14px;color:var(--fg2)}
+.mode .ex{font-family:var(--read);font-size:15px;color:var(--fg2);border-left:2px solid var(--sep);padding-left:10px;margin-top:4px}
+
+/* Tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bar);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-top:1px solid var(--sep);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabbar .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;font-weight:600;color:var(--fg3)}
+.tab svg{width:24px;height:24px}
+.tab[aria-current="page"]{color:var(--accent)}
+.tab .badge{position:absolute;margin-left:22px;margin-top:-2px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center}
+.tab .ico{position:relative;display:flex}
+
+/* Full-screen overlay (study / quiz) */
+.ov{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:calc(env(safe-area-inset-top,0px) + 8px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ov-in{max-width:520px;width:100%;margin:0 auto;flex:1;min-height:0;display:flex;flex-direction:column}
+.ov-head{display:flex;align-items:center;gap:12px;padding:4px 0 8px}
+.pbar{flex:1;height:6px;border-radius:999px;background:var(--track);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .3s}
+.count{font-size:13px;font-weight:600;color:var(--fg2);font-variant-numeric:tabular-nums;min-width:44px;text-align:right}
+
+/* Flashcard */
+.stage{flex:1;min-height:0;display:flex;padding:8px 0 12px}
+.fc{flex:1;position:relative;perspective:1400px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.fc-move{position:absolute;inset:0;transition:transform .25s ease}
+.fc-move.drag{transition:none}
+.fc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.7,.3,1)}
+.fc.flipped .fc-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px;background:var(--card);border:1px solid var(--sep);padding:22px 20px;display:flex;flex-direction:column}
+.front{align-items:center;justify-content:center;text-align:center;gap:14px}
+.front .w{font-family:var(--read);font-size:clamp(38px,11vw,52px);font-weight:500;letter-spacing:-.015em;line-height:1.05;overflow-wrap:anywhere}
+.front .pron{justify-content:center}
+.front .tap{position:absolute;bottom:18px;left:0;right:0;font-size:13px;color:var(--fg3)}
+.front .pill{position:absolute;top:18px;left:18px}
+.front .pos{position:absolute;top:18px;right:18px;font-size:13px;color:var(--fg3);font-style:italic;font-family:var(--read)}
+.back{transform:rotateY(180deg);overflow-y:auto;gap:14px;-webkit-overflow-scrolling:touch}
+.back .hd{display:flex;align-items:center;gap:10px}
+.back .hd .w{font-family:var(--read);font-size:28px;font-weight:500;line-height:1.1}
+.back .hd .pos{font-family:var(--read);font-style:italic;color:var(--fg3);font-size:15px}
+.back .hd .speak{margin-left:auto}
+.def{font-size:17px;line-height:1.45}
+.blk{display:flex;flex-direction:column;gap:6px}
+.blk .lb{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px}
+.t-syn{background:var(--mastery-soft);color:var(--mastery)}
+.t-ant{background:var(--bad-soft);color:var(--bad)}
+.ex{font-family:var(--read);font-size:18px;line-height:1.5;margin:0}
+.ex mark{background:none;color:#86A6FF;font-weight:600}
+.it-box{background:var(--raised);border-radius:14px;padding:10px 12px;font-size:15px}
+.it-toggle{font-size:14px;font-weight:600;color:#86A6FF;align-self:flex-start;padding:4px 0}
+.swipe-tag{position:absolute;top:22px;z-index:3;padding:6px 12px;border-radius:10px;font-weight:800;font-size:15px;letter-spacing:.04em;border:2px solid currentColor;opacity:0;pointer-events:none}
+.swipe-tag.l{right:22px;color:var(--bad);transform:rotate(8deg)}
+.swipe-tag.r{left:22px;color:var(--mastery);transform:rotate(-8deg)}
+.controls{display:flex;flex-direction:column;gap:8px}
+.big-btn{width:100%;padding:16px;border-radius:16px;background:var(--accent);color:#fff;font-weight:700;font-size:17px;text-align:center}
+.big-btn.sec{background:var(--card);color:var(--fg)}
+.big-btn[disabled]{background:var(--card);color:var(--fg3);cursor:default}
+.rate-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rate{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 4px;border-radius:16px;background:var(--card);text-align:center}
+.rate .t{font-weight:700;font-size:15px}
+.rate .s{font-size:12px;color:var(--fg2);font-variant-numeric:tabular-nums}
+.rate.again{background:var(--bad-soft)} .rate.again .t{color:var(--bad)}
+.rate.hard{background:var(--goal-soft)} .rate.hard .t{color:var(--goal)}
+.rate.easy{background:var(--mastery-soft)} .rate.easy .t{color:var(--mastery)}
+.hint-line{text-align:center;font-size:12px;color:var(--fg3)}
+
+/* Quiz */
+.q-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:6px 0 12px}
+.q-type{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#86A6FF}
+.q-instr{font-size:14px;color:var(--fg2);margin:-6px 0 0}
+.q-text{font-family:var(--read);font-size:20px;line-height:1.55;background:var(--card);border-radius:18px;padding:18px;margin:0}
+.blank{display:inline-block;min-width:5.2em;border-bottom:2px solid var(--fg2);height:1.1em;vertical-align:-2px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;background:var(--card);border:2px solid transparent;width:100%}
+.opt .let{width:28px;height:28px;border-radius:8px;background:var(--raised);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--fg2);flex:none}
+.opt.se .let{border-radius:6px}
+.opt .ow{font-family:var(--read);font-size:18px}
+.opt[aria-pressed="true"]{border-color:var(--accent)}
+.opt[aria-pressed="true"] .let{background:var(--accent);color:#fff}
+.opt.ok{border-color:var(--mastery);background:var(--mastery-soft)}
+.opt.ok .let{background:var(--mastery);color:#0B0C0E}
+.opt.no{border-color:var(--bad);background:var(--bad-soft)}
+.opt.no .let{background:var(--bad);color:#0B0C0E}
+.opt[disabled]{cursor:default}
+.fb{background:var(--card);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.fb .res{font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
+.fb .res.good{color:var(--mastery)} .fb .res.bad{color:var(--bad)}
+.fb .ex{font-size:17px}
+
+/* Results */
+.result{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:12px 0}
+.result h2{margin:0;font-size:26px;font-weight:700}
+.result p{margin:0;color:var(--fg2);max-width:34ch}
+.sumrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+
+/* Sheet */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
+.sheet{width:100%;max-width:520px;max-height:88%;overflow-y:auto;background:var(--card);border-radius:24px 24px 0 0;padding:10px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));animation:up .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:14px}
+.grab{width:38px;height:5px;border-radius:999px;background:var(--raised);align-self:center}
+.sheet h3{margin:0;font-size:20px}
+.sheet .sh-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sheet .close{width:32px;height:32px;border-radius:50%;background:var(--raised);display:grid;place-items:center;color:var(--fg2)}
+.sheet .back-like{display:flex;flex-direction:column;gap:14px}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kv div{background:var(--raised);border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kv span{font-size:11px;color:var(--fg2);font-weight:600}
+.kv b{font-size:15px;font-variant-numeric:tabular-nums}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:var(--raised);color:var(--fg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:fade .2s;max-width:calc(100% - 32px)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+@media (max-width:360px){.grid{grid-template-columns:repeat(2,1fr)}.kv{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app" id="app"></div>
+<nav class="tabbar" aria-label="Sezioni"><div class="in" id="tabs"></div></nav>
+<div id="layer"></div>
+
+<script>
+/* ---------- Vocabolario: parola|IPA|pronuncia figurata|pos|definizione|italiano|sinonimi|contrari|frase GRE (*parola*)|parole da non usare come distrattori ---------- */
+const RAW = `ubiquitous|/juːˈbɪkwɪtəs/|yoo-BIK-wih-tus|adj|present, appearing, or found everywhere|onnipresente, diffuso ovunque|omnipresent;pervasive;universal|rare;scarce;uncommon|Once a luxury reserved for the wealthy, the smartphone has become so *ubiquitous* that it is now harder to find someone without one.|
+ephemeral|/ɪˈfem(ə)rəl/|ih-FEM-er-ul|adj|lasting for a very short time|effimero, di breve durata|transient;fleeting;evanescent|permanent;enduring;lasting|Critics dismissed the trend as *ephemeral*, predicting that it would vanish before the next season.|
+obfuscate|/ˈɑːbfəˌskeɪt/|AHB-fuh-skayt|verb|to make something unclear or hard to understand, often deliberately|offuscare, rendere oscuro (spesso di proposito)|obscure;muddle;confuse|clarify;elucidate;illuminate|Rather than answering the question directly, the spokesperson tried to *obfuscate* the issue with jargon and irrelevant statistics.|prevaricate
+equivocal|/ɪˈkwɪvək(ə)l/|ih-KWIV-uh-kul|adj|open to more than one interpretation; ambiguous, often intentionally|equivoco, ambiguo|ambiguous;vague;noncommittal|unequivocal;clear;definite|The results of the trial were *equivocal*: some patients improved, but just as many showed no change at all.|opaque
+pragmatic|/præɡˈmætɪk/|prag-MAT-ik|adj|dealing with things sensibly and realistically, based on practical rather than theoretical considerations|pragmatico, concreto|practical;realistic;sensible|idealistic;impractical;quixotic|Although she admired the theory, she took a *pragmatic* approach and adopted whatever method actually worked in the lab.|prudent
+garrulous|/ˈɡærələs/|GAIR-uh-lus|adj|excessively talkative, especially about trivial matters|logorroico, chiacchierone|talkative;loquacious;voluble|taciturn;reticent;laconic|Her *garrulous* seatmate talked through the entire flight, leaving her no chance to read or sleep.|
+loquacious|/loʊˈkweɪʃəs/|loh-KWAY-shus|adj|tending to talk a great deal|loquace, ciarliero|talkative;garrulous;voluble|taciturn;reserved;reticent|Usually reserved in meetings, the engineer became surprisingly *loquacious* once the topic turned to his favorite project.|
+fastidious|/fæˈstɪdiəs/|fa-STID-ee-us|adj|very attentive to accuracy and detail; hard to please|meticoloso, pignolo, esigente|meticulous;punctilious;finicky|careless;sloppy;negligent|A *fastidious* editor, she would not let a single misplaced comma slip into print.|pedantic
+anomaly|/əˈnɑːməli/|uh-NAH-muh-lee|noun|something that deviates from what is standard, normal, or expected|anomalia|aberration;irregularity;deviation|norm;regularity;conformity|The warm January was not an *anomaly* but part of a decade-long pattern of rising temperatures.|anachronism;idiosyncrasy
+esoteric|/ˌesəˈterɪk/|es-uh-TAIR-ik|adj|intended for or understood by only a small group with specialized knowledge|esoterico, per pochi iniziati|arcane;abstruse;recondite|accessible;common;popular|The lecture was so *esoteric* that only the handful of specialists in the room could follow it.|opaque
+laconic|/ləˈkɑːnɪk/|luh-KAH-nik|adj|using very few words|laconico, conciso|terse;succinct;taciturn|verbose;garrulous;loquacious|Known for his *laconic* replies, the coach answered the reporters' long questions with a single word.|perfunctory
+capricious|/kəˈprɪʃəs/|kuh-PRISH-us|adj|given to sudden and unaccountable changes of mood or behavior|capriccioso, volubile|fickle;mercurial;erratic|steady;constant;predictable|The *capricious* weather on the mountain could turn a sunny morning into a blizzard within an hour.|
+enervate|/ˈenərveɪt/|EN-er-vayt|verb|to cause someone to feel drained of energy; to weaken|snervare, spossare, indebolire (attenzione: non vuol dire «energizzare»)|weaken;exhaust;debilitate|energize;invigorate;strengthen|The relentless heat seemed to *enervate* the runners, who slowed to a walk long before the finish line.|
+venerate|/ˈvenəreɪt/|VEN-uh-rayt|verb|to regard with great respect; to revere|venerare, riverire|revere;honor;esteem|despise;scorn;disdain|Young physicists tend to *venerate* the founders of their field, sometimes treating their every remark as beyond question.|
+prodigal|/ˈprɑːdɪɡəl/|PRAH-dih-gul|adj|spending money or resources freely and recklessly; wastefully extravagant|prodigo, scialacquatore|wasteful;extravagant;profligate|frugal;thrifty;parsimonious|The heir's *prodigal* habits exhausted a family fortune that had taken three generations to build.|
+placate|/ˈpleɪkeɪt/|PLAY-kayt|verb|to make someone less angry or hostile|placare, calmare|appease;mollify;pacify|provoke;antagonize;enrage|The manager offered a full refund to *placate* the furious customer.|assuage
+mitigate|/ˈmɪtɪɡeɪt/|MIT-ih-gayt|verb|to make something less severe, serious, or painful|mitigare, attenuare|alleviate;lessen;temper|aggravate;exacerbate;intensify|Planting trees along the river can *mitigate* the damage caused by seasonal flooding.|ameliorate;assuage
+corroborate|/kəˈrɑːbəreɪt/|kuh-RAH-buh-rayt|verb|to confirm or give support to a statement, theory, or finding|corroborare, confermare|confirm;substantiate;verify|refute;contradict;undermine|Two independent laboratories were able to *corroborate* the initial findings, lending them considerable credibility.|bolster
+lucid|/ˈluːsɪd/|LOO-sid|adj|expressed clearly; easy to understand|lucido, chiaro, limpido|clear;coherent;intelligible|obscure;confusing;opaque|Despite the complexity of the subject, her explanation was so *lucid* that even first-year students understood it.|cogent
+ostentatious|/ˌɑːstenˈteɪʃəs/|ah-sten-TAY-shus|adj|designed to impress or attract notice; showy|ostentato, appariscente, pacchiano|showy;flamboyant;pretentious|modest;understated;restrained|The *ostentatious* mansion, with its gold-plated gates and marble fountains, seemed built mainly to be admired from the road.|florid
+pedantic|/pɪˈdæntɪk/|puh-DAN-tik|adj|excessively concerned with minor details or rules; showing off learning|pedante, cavilloso|fussy;didactic;nitpicking|casual;flexible;informal|His *pedantic* insistence on correcting every minor grammatical slip made group discussions tedious.|fastidious
+prosaic|/proʊˈzeɪɪk/|proh-ZAY-ik|adj|lacking poetic beauty or imagination; dull and ordinary|prosaico, banale, ordinario|mundane;ordinary;humdrum|imaginative;inspired;poetic|Fans expecting a dramatic origin story were disappointed by the *prosaic* truth: the band's name came from a grocery list.|banal;insipid;anodyne
+quiescent|/kwiˈes(ə)nt/|kwee-ES-unt|adj|in a state of inactivity or dormancy|quiescente, inattivo, dormiente|dormant;inactive;latent|active;dynamic;turbulent|The volcano had been *quiescent* for centuries, so the sudden eruption caught geologists by surprise.|placid;lethargic
+recalcitrant|/rɪˈkælsɪtrənt/|rih-KAL-sih-trunt|adj|stubbornly uncooperative toward authority or discipline|recalcitrante, riottoso|obstinate;defiant;intractable|compliant;docile;tractable|Even the most *recalcitrant* students eventually cooperated once the teacher let them choose their own projects.|
+reticent|/ˈretɪs(ə)nt/|RET-ih-sunt|adj|not revealing one's thoughts or feelings readily; reserved|reticente, riservato|reserved;taciturn;restrained|forthcoming;candid;garrulous|Usually *reticent* about her private life, the author surprised interviewers by speaking openly about her childhood.|diffident
+soporific|/ˌsɑːpəˈrɪfɪk/|sah-puh-RIF-ik|adj|tending to induce drowsiness or sleep|soporifero, noioso da addormentare|sleep-inducing;tedious;somnolent|stimulating;invigorating;exciting|The professor's monotone delivery was so *soporific* that half the audience was nodding off by the second slide.|insipid;banal;prosaic
+stolid|/ˈstɑːlɪd/|STAH-lid|adj|calm, dependable, and showing little emotion|impassibile, flemmatico|impassive;phlegmatic;unemotional|excitable;emotional;volatile|The *stolid* guard did not so much as blink while tourists shouted and waved in front of him.|placid
+taciturn|/ˈtæsɪtɜːrn/|TAS-ih-turn|adj|reserved or uncommunicative in speech; saying little|taciturno|reticent;laconic;reserved|talkative;garrulous;loquacious|The *taciturn* farmer rarely spoke more than a few words, even to his closest neighbors.|
+vacillate|/ˈvæsɪleɪt/|VAS-ih-layt|verb|to waver between different opinions or actions; to be indecisive|vacillare, tentennare|waver;hesitate;dither|decide;commit;persist|Voters who *vacillate* until election day are the ones campaigns spend the most money trying to persuade.|prevaricate
+zealot|/ˈzelət/|ZEL-ut|noun|a person who is fanatical and uncompromising in pursuit of their ideals|fanatico, zelota|fanatic;extremist;radical|moderate;skeptic|A true *zealot*, he refused to consider any evidence that contradicted his beliefs.|
+aberrant|/æˈberənt/|ab-AIR-unt|adj|departing from an accepted standard; deviant|aberrante, anomalo|deviant;abnormal;atypical|normal;typical;standard|Researchers discarded the one *aberrant* data point, which differed wildly from every other measurement.|spurious
+abstain|/əbˈsteɪn/|ub-STAYN|verb|to restrain oneself from doing something; to formally decline to vote|astenersi|refrain;forgo;decline|indulge;partake|Several committee members chose to *abstain* rather than vote on a proposal they found confusing.|
+alacrity|/əˈlækrəti/|uh-LAK-rih-tee|noun|brisk and cheerful readiness|alacrità, prontezza entusiasta|eagerness;enthusiasm;readiness|reluctance;apathy;lethargy|Eager to prove herself, the new intern accepted every assignment with *alacrity*.|
+ameliorate|/əˈmiːliəreɪt/|uh-MEEL-yuh-rayt|verb|to make something bad or unsatisfactory better|migliorare, rendere meno grave|improve;better;enhance|worsen;aggravate;exacerbate|New irrigation methods helped *ameliorate* living conditions in villages that had suffered years of drought.|mitigate
+anachronism|/əˈnækrəˌnɪzəm/|uh-NAK-ruh-niz-um|noun|something that belongs to a period other than the one in which it appears|anacronismo|archaism;incongruity;relic|novelty|The wristwatch on the Roman centurion was an *anachronism* that eagle-eyed viewers spotted immediately.|anomaly
+assuage|/əˈsweɪdʒ/|uh-SWAYJ|verb|to make an unpleasant feeling less intense|alleviare, lenire, placare|alleviate;ease;relieve|intensify;aggravate;exacerbate|The CEO's reassuring letter did little to *assuage* investors' fears about the company's mounting debt.|placate;mollify;mitigate
+audacious|/ɔːˈdeɪʃəs/|aw-DAY-shus|adj|showing a willingness to take bold risks|audace, temerario|bold;daring;intrepid|timid;cautious;meek|The *audacious* plan to cross the Antarctic on foot struck most experts as reckless, yet the team succeeded.|impetuous;quixotic
+austere|/ɔːˈstɪr/|aw-STEER|adj|severe or strict in manner; plain and without decoration|austero, sobrio, spartano|severe;stark;ascetic|ornate;lavish;luxurious|The monks lived in *austere* cells furnished with nothing but a narrow bed and a wooden chair.|frugal
+banal|/bəˈnɑːl/|buh-NAHL|adj|so lacking in originality as to be obvious and boring|banale, trito|trite;hackneyed;commonplace|original;novel;fresh|The novel's plot was so *banal* that most readers guessed the ending by chapter three.|prosaic;insipid;mundane;anodyne
+belie|/bɪˈlaɪ/|bih-LYE|verb|to give a false impression of; to contradict or fail to fit|smentire, nascondere, contraddire|contradict;disguise;misrepresent|reveal;confirm;demonstrate|His relaxed smile seemed to *belie* the anxiety he later admitted feeling before the debate.|refute
+bolster|/ˈboʊlstər/|BOHL-ster|verb|to support or strengthen|sostenere, rafforzare|reinforce;strengthen;buttress|undermine;weaken;erode|The new data should *bolster* the argument that early education produces lasting benefits.|corroborate
+burgeon|/ˈbɜːrdʒən/|BUR-jun|verb|to begin to grow or increase rapidly; to flourish|fiorire, crescere rapidamente|flourish;proliferate;expand|dwindle;wither;shrink|As remote work spread, small towns began to *burgeon* with new residents fleeing expensive cities.|
+cacophony|/kəˈkɑːfəni/|kuh-KAH-fuh-nee|noun|a harsh, discordant mixture of sounds|cacofonia, frastuono|din;discord;racket|harmony;euphony;silence|The morning *cacophony* of car horns, jackhammers, and sirens made it impossible to concentrate.|
+castigate|/ˈkæstɪɡeɪt/|KAS-tih-gayt|verb|to reprimand someone severely|rimproverare aspramente, castigare|rebuke;reprimand;chastise|praise;commend;laud|Rather than *castigate* the team for the loss, the coach praised their effort and focused on what to fix.|denigrate
+caustic|/ˈkɔːstɪk/|KAWS-tik|adj|sarcastic in a scathing and bitter way|caustico, mordace|scathing;acerbic;biting|mild;gentle;kind|The critic's *caustic* review mocked everything from the plot to the actors' costumes.|polemical
+chicanery|/ʃɪˈkeɪnəri/|shih-KAY-nuh-ree|noun|the use of trickery to achieve a political, financial, or legal purpose|raggiro, imbroglio|trickery;deception;subterfuge|honesty;candor;integrity|The auditors uncovered years of financial *chicanery* hidden behind a maze of shell companies.|
+cogent|/ˈkoʊdʒənt/|KOH-junt|adj|clear, logical, and convincing|convincente, persuasivo|compelling;convincing;persuasive|weak;unconvincing;flimsy|Her *cogent* argument persuaded even the most skeptical members of the committee to change their votes.|lucid
+conciliatory|/kənˈsɪliəˌtɔːri/|kun-SIL-ee-uh-tor-ee|adj|intended to placate or pacify; seeking to end conflict|conciliante|placatory;appeasing;pacifying|antagonistic;hostile;confrontational|After weeks of angry exchanges, the union adopted a more *conciliatory* tone and returned to the negotiating table.|
+conundrum|/kəˈnʌndrəm/|kuh-NUN-drum|noun|a confusing and difficult problem or question|enigma, rompicapo, dilemma|puzzle;dilemma;enigma|solution;answer|How to cut costs without laying off staff was a *conundrum* that kept the board debating for months.|
+credulous|/ˈkredʒələs/|KREJ-uh-lus|adj|too ready to believe things|credulone, ingenuo|gullible;naive;trusting|skeptical;suspicious;wary|Only the most *credulous* readers believed the article claiming that the moon was made of compressed dust.|
+deference|/ˈdefərəns/|DEF-er-uns|noun|humble submission and respect|deferenza, rispetto|respect;regard;submission|disrespect;contempt;insolence|The junior lawyers treated the senior partner with a *deference* that bordered on fear.|
+denigrate|/ˈdenɪɡreɪt/|DEN-ih-grayt|verb|to criticize unfairly; to disparage|denigrare, sminuire|disparage;belittle;defame|praise;extol;laud|It is easy to *denigrate* the early pioneers of the field, but their crude methods made later breakthroughs possible.|castigate
+diatribe|/ˈdaɪəˌtraɪb/|DYE-uh-tryb|noun|a forceful and bitter verbal attack|diatriba, invettiva|tirade;harangue;invective|praise;eulogy;tribute|What began as a polite question-and-answer session turned into a twenty-minute *diatribe* against the city council.|
+diffident|/ˈdɪfɪdənt/|DIF-ih-dunt|adj|modest or shy because of a lack of self-confidence|insicuro, timido, schivo (non «diffidente»)|shy;timid;self-effacing|confident;assertive;bold|Though brilliant, the *diffident* student rarely raised her hand, convinced her ideas were not worth sharing.|reticent
+dilettante|/ˌdɪləˈtɑːnt/|dil-uh-TAHNT|noun|a person who cultivates an area of interest without real commitment or knowledge|dilettante|amateur;dabbler;layperson|expert;professional;connoisseur|A mere *dilettante* in astronomy, he could name a few constellations but knew nothing of the underlying physics.|
+disparate|/ˈdɪspərət/|DIS-per-ut|adj|essentially different in kind; not allowing comparison|eterogeneo, disparato|dissimilar;divergent;distinct|similar;homogeneous;uniform|The anthology brings together *disparate* voices, from medieval monks to contemporary rappers.|eclectic
+dogmatic|/dɔːɡˈmætɪk/|dawg-MAT-ik|adj|inclined to lay down principles as undeniably true, without considering evidence or others' opinions|dogmatico|doctrinaire;opinionated;rigid|open-minded;flexible;skeptical|A good scientist cannot afford to be *dogmatic*; every theory must remain open to revision in light of new evidence.|intransigent;obdurate
+eclectic|/ɪˈklektɪk/|ih-KLEK-tik|adj|deriving ideas, style, or taste from a broad and diverse range of sources|eclettico|diverse;varied;wide-ranging|uniform;narrow;homogeneous|Her *eclectic* record collection ranged from Baroque opera to Brazilian funk.|disparate
+efficacy|/ˈefɪkəsi/|EF-ih-kuh-see|noun|the ability to produce a desired or intended result|efficacia|effectiveness;potency;usefulness|ineffectiveness;futility|Large clinical trials are needed to establish the *efficacy* of a new drug before it can be approved.|veracity
+eulogy|/ˈjuːlədʒi/|YOO-luh-jee|noun|a speech or piece of writing that praises someone highly, typically someone who has just died|elogio (spesso funebre)|tribute;panegyric;encomium|diatribe;condemnation;criticism|At the memorial, her oldest friend delivered a moving *eulogy* that celebrated her humor and generosity.|
+engender|/ɪnˈdʒendər/|in-JEN-der|verb|to cause or give rise to a feeling, situation, or condition|generare, suscitare|cause;produce;foster|suppress;prevent;stifle|Secrecy within an organization tends to *engender* suspicion among employees.|foment
+erudite|/ˈerəˌdaɪt/|AIR-uh-dyte|adj|having or showing great knowledge or learning|erudito, colto|learned;scholarly;knowledgeable|ignorant;uneducated;illiterate|The *erudite* professor could quote from Greek, Latin, and Sanskrit texts without consulting a single note.|
+exacerbate|/ɪɡˈzæsərˌbeɪt/|ig-ZAS-er-bayt|verb|to make a problem, bad situation, or negative feeling worse|esacerbare, aggravare|aggravate;worsen;intensify|alleviate;mitigate;ameliorate|Cutting funding for public transit would only *exacerbate* the city's already severe traffic congestion.|
+exculpate|/ˈekskʌlˌpeɪt/|EK-skul-payt|verb|to show or declare that someone is not guilty of wrongdoing|scagionare, discolpare|exonerate;absolve;vindicate|incriminate;implicate;blame|New DNA evidence served to *exculpate* the man who had spent twenty years in prison for a crime he did not commit.|
+extant|/ˈekstənt/|EK-stunt|adj|still in existence; surviving|esistente, superstite, giunto fino a noi|surviving;existing;remaining|extinct;lost;defunct|Only three copies of the original manuscript are still *extant*; the rest were destroyed in a fire.|
+fervent|/ˈfɜːrvənt/|FUR-vunt|adj|having or displaying passionate intensity|fervente, ardente|ardent;passionate;zealous|apathetic;indifferent;lukewarm|A *fervent* supporter of the arts, she donated half her fortune to museums and orchestras.|vociferous
+florid|/ˈflɔːrɪd/|FLOR-id|adj|elaborately or excessively ornate (of language or style); also, having a red complexion|fiorito, ampolloso, ridondante|ornate;flowery;flamboyant|plain;austere;understated|Modern readers often find Victorian prose too *florid*, packed with adjectives and lengthy digressions.|ostentatious
+foment|/foʊˈment/|foh-MENT|verb|to instigate or stir up an undesirable course of action|fomentare, istigare|instigate;incite;provoke|quell;suppress;calm|The pamphlets were designed to *foment* unrest among workers already frustrated by low wages.|engender
+frugal|/ˈfruːɡ(ə)l/|FROO-gul|adj|sparing or economical with money or food|frugale, parco, risparmiatore|thrifty;economical;sparing|extravagant;wasteful;prodigal|Thanks to years of *frugal* living, the couple was able to retire a decade earlier than their friends.|parsimonious;austere
+gregarious|/ɡrɪˈɡeriəs/|grih-GAIR-ee-us|adj|fond of company; sociable|socievole, espansivo|sociable;outgoing;convivial|introverted;reclusive;unsociable|Unlike his *gregarious* brother, who loved parties, Tom preferred quiet evenings alone with a book.|
+hackneyed|/ˈhæknid/|HAK-need|adj|lacking significance through having been overused; unoriginal and trite|trito, abusato, scontato|trite;clichéd;banal|original;fresh;innovative|The speech was full of *hackneyed* phrases like "think outside the box" and "at the end of the day."|prosaic;insipid;mundane
+harangue|/həˈræŋ/|huh-RANG|noun|a lengthy and aggressive speech|filippica, predica aggressiva|tirade;diatribe;lecture|compliment;praise|The sergeant's *harangue* about punctuality lasted so long that the recruits were late for their next drill.|
+iconoclast|/aɪˈkɑːnəˌklæst/|eye-KAH-nuh-klast|noun|a person who attacks cherished beliefs or institutions|iconoclasta, dissacratore|rebel;heretic;dissenter|conformist;traditionalist;follower|An *iconoclast* by temperament, the young architect rejected every principle her teachers held sacred.|
+idiosyncrasy|/ˌɪdiəˈsɪŋkrəsi/|id-ee-oh-SING-kruh-see|noun|a distinctive or peculiar feature or habit of a person or thing|peculiarità, stranezza (non «idiosincrasia» = avversione)|quirk;peculiarity;eccentricity|conformity;normality|One *idiosyncrasy* of the composer was that he wrote only while standing at a tall desk.|anomaly
+impetuous|/ɪmˈpetʃuəs/|im-PECH-oo-us|adj|acting or done quickly and without thought or care|impetuoso, avventato|impulsive;rash;hasty|cautious;deliberate;prudent|In an *impetuous* moment, he quit his job by email, only to regret the decision the next morning.|audacious
+inchoate|/ɪnˈkoʊət/|in-KOH-ut|adj|just begun and so not fully formed or developed|embrionale, abbozzato, incipiente|rudimentary;embryonic;undeveloped|developed;mature;complete|Her ideas for the novel were still *inchoate*, more a collection of images than a coherent plot.|
+ingenuous|/ɪnˈdʒenjuəs/|in-JEN-yoo-us|adj|innocent and unsuspecting; candid and frank|ingenuo, candido (non confondere con ingenious = geniale)|naive;artless;guileless|disingenuous;cunning;sophisticated|It was almost touching how *ingenuous* the new recruit was, believing every promise the recruiters made.|
+intransigent|/ɪnˈtrænzɪdʒənt/|in-TRAN-zih-junt|adj|unwilling to change one's views or to agree about something|intransigente|uncompromising;obstinate;inflexible|flexible;accommodating;compliant|Because both sides remained *intransigent*, the negotiations collapsed after only two days.|dogmatic
+inure|/ɪˈnjʊr/|ih-NYOOR|verb|to accustom someone to something, especially something unpleasant|assuefare, abituare, temprare|accustom;habituate;harden|sensitize|Years of working in the emergency room seemed to *inure* her to sights that would horrify most people.|
+irascible|/ɪˈræsəb(ə)l/|ih-RAS-uh-bul|adj|having or showing a tendency to be easily angered|irascibile, collerico|irritable;cantankerous;testy|easygoing;placid;even-tempered|The *irascible* landlord would shout at tenants over the smallest complaint.|
+laudable|/ˈlɔːdəb(ə)l/|LAW-duh-bul|adj|deserving praise and commendation|lodevole, encomiabile|commendable;praiseworthy;admirable|blameworthy;reprehensible;shameful|The goal of the program is *laudable*, but critics question whether it can be achieved with so little funding.|
+lethargic|/ləˈθɑːrdʒɪk/|luh-THAR-jik|adj|sluggish and apathetic; lacking energy|letargico, fiacco, apatico|sluggish;listless;torpid|energetic;vigorous;lively|After the heavy holiday meal, everyone felt too *lethargic* to go for the planned afternoon walk.|
+malleable|/ˈmæliəb(ə)l/|MAL-ee-uh-bul|adj|easily influenced or shaped; (of metal) able to be hammered into shape|malleabile, influenzabile|pliable;adaptable;impressionable|rigid;intractable;obdurate|Young children's opinions are highly *malleable*, so they often adopt the views of the adults around them.|tractable
+maverick|/ˈmævərɪk/|MAV-er-ik|noun|an unorthodox or independent-minded person|anticonformista, battitore libero|nonconformist;individualist;rebel|conformist;follower|A political *maverick*, the senator frequently voted against her own party when she disagreed with its position.|
+misanthrope|/ˈmɪsənˌθroʊp/|MIS-un-throhp|noun|a person who dislikes humankind and avoids human society|misantropo|cynic;recluse;loner|philanthropist;humanitarian|A lifelong *misanthrope*, the writer moved to a remote island so he would never have to deal with neighbors.|
+mollify|/ˈmɑːlɪˌfaɪ/|MAH-lih-fye|verb|to appease the anger or anxiety of someone|placare, ammansire, calmare|placate;appease;soothe|anger;provoke;incite|The airline tried to *mollify* stranded passengers by offering free meals and hotel rooms.|assuage
+nascent|/ˈnæs(ə)nt/|NAS-unt|adj|just coming into existence and beginning to display signs of future potential|nascente, emergente|emerging;budding;embryonic|mature;established;declining|The *nascent* electric-car industry of the early 2000s bore little resemblance to the global market of today.|
+obdurate|/ˈɑːbdərət/|AHB-duh-rut|adj|stubbornly refusing to change one's opinion or course of action|ostinato, inflessibile, irremovibile|stubborn;unyielding;obstinate|amenable;flexible;compliant|Despite pleas from the victims' families, the official remained *obdurate* and refused to reopen the case.|
+obsequious|/əbˈsiːkwiəs/|ub-SEE-kwee-us|adj|excessively eager to please or obey|ossequioso, servile|servile;fawning;sycophantic|domineering;assertive;haughty|The *obsequious* waiter laughed at every one of the billionaire's jokes and refilled his glass after every sip.|
+opaque|/oʊˈpeɪk/|oh-PAYK|adj|not able to be seen through; (figuratively) hard to understand|opaco; oscuro, poco chiaro|obscure;unclear;impenetrable|transparent;clear;lucid|The company's accounting practices were so *opaque* that even its own auditors could not explain where the money went.|equivocal;esoteric
+paucity|/ˈpɔːsəti/|PAW-suh-tee|noun|the presence of something in only small or insufficient quantities|scarsità, penuria|scarcity;dearth;lack|abundance;plethora;profusion|The *paucity* of reliable evidence made it impossible for historians to reach a firm conclusion.|
+penchant|/ˈpentʃənt/|PEN-chunt|noun|a strong or habitual liking for something|inclinazione, predilezione|fondness;inclination;propensity|aversion;dislike;antipathy|She has a *penchant* for old maps, and her apartment walls are covered with them.|
+perfunctory|/pərˈfʌŋktəri/|per-FUNK-tuh-ree|adj|carried out with minimum effort or reflection|sbrigativo, superficiale, fatto per dovere|cursory;superficial;offhand|thorough;careful;meticulous|The guard gave our passports a *perfunctory* glance before waving us through.|
+placid|/ˈplæsɪd/|PLAS-id|adj|not easily upset or excited; calm and peaceful|placido, tranquillo|calm;serene;tranquil|turbulent;agitated;irascible|The lake was so *placid* that morning that it perfectly reflected the mountains above it.|quiescent;stolid
+plethora|/ˈpleθərə/|PLETH-uh-ruh|noun|a large or excessive amount of something|pletora, sovrabbondanza|excess;abundance;profusion|dearth;paucity;scarcity|Faced with this *plethora* of options, many shoppers end up buying nothing at all.|
+prevaricate|/prɪˈværɪˌkeɪt/|prih-VAIR-ih-kayt|verb|to speak or act evasively; to avoid telling the truth directly|tergiversare, essere evasivo (falso amico: non «prevaricare»)|equivocate;hedge;dodge||When asked where the money had gone, the treasurer began to *prevaricate*, offering vague answers that satisfied no one.|obfuscate;vacillate
+profligate|/ˈprɑːflɪɡət/|PRAH-flih-gut|adj|recklessly extravagant or wasteful in the use of resources; also, dissolute|scialacquatore, sprecone; dissoluto|wasteful;prodigal;spendthrift|frugal;thrifty;parsimonious|The government's *profligate* spending left the country with a debt it could not hope to repay.|
+propensity|/prəˈpensəti/|pruh-PEN-suh-tee|noun|an inclination or natural tendency to behave in a particular way|propensione, tendenza|tendency;inclination;proclivity|aversion;disinclination|His *propensity* for exaggeration made it hard to know which of his stories to believe.|
+prudent|/ˈpruːd(ə)nt/|PROO-dunt|adj|acting with or showing care and thought for the future|prudente, accorto|cautious;judicious;sensible|rash;reckless;imprudent|It would be *prudent* to back up your files before installing the update.|pragmatic;sagacious
+quixotic|/kwɪkˈsɑːtɪk/|kwik-SAH-tik|adj|exceedingly idealistic; unrealistic and impractical|donchisciottesco, utopistico|idealistic;unrealistic;romantic|pragmatic;practical;realistic|His *quixotic* plan to end world hunger with a single smartphone app was admired for its ambition but not its realism.|audacious
+refute|/rɪˈfjuːt/|rih-FYOOT|verb|to prove a statement or theory to be wrong or false|confutare, smentire|disprove;rebut;debunk|confirm;prove;corroborate|The lawyer presented security footage to *refute* the witness's claim that the defendant had been at the scene.|repudiate;belie
+repudiate|/rɪˈpjuːdiˌeɪt/|rih-PYOO-dee-ayt|verb|to refuse to accept or be associated with; to deny the truth of|ripudiare, respingere, sconfessare|reject;disown;renounce|accept;embrace;endorse|The candidate was quick to *repudiate* the offensive remarks made by one of his supporters.|refute
+sagacious|/səˈɡeɪʃəs/|suh-GAY-shus|adj|having or showing keen mental discernment and good judgment; wise|sagace, saggio, perspicace|wise;astute;shrewd|foolish;obtuse;imprudent|The *sagacious* investor sold her shares months before the market collapsed.|prudent
+spurious|/ˈspjʊriəs/|SPYOOR-ee-us|adj|not being what it purports to be; false or fake; based on faulty reasoning|spurio, falso, infondato|false;bogus;specious|genuine;authentic;valid|The study's conclusions rested on a *spurious* correlation between ice-cream sales and drowning deaths.|aberrant
+sycophant|/ˈsɪkəfənt/|SIK-uh-funt|noun|a person who acts obsequiously toward someone important to gain advantage|adulatore, leccapiedi (non «sicofante» = delatore)|flatterer;toady;yes-man|critic;detractor|Surrounded by flatterers, the aging king mistook every *sycophant* for a loyal friend.|
+tenuous|/ˈtenjuəs/|TEN-yoo-us|adj|very weak or slight; insubstantial|tenue, debole, labile|flimsy;weak;slight|strong;solid;substantial|The connection between the two events is *tenuous* at best, resting on a single ambiguous letter.|
+torpor|/ˈtɔːrpər/|TOR-per|noun|a state of physical or mental inactivity; lethargy|torpore, intorpidimento|lethargy;inertia;sluggishness|vigor;energy;alertness|The afternoon heat induced a kind of *torpor* in the office, and almost no work got done.|
+tractable|/ˈtræktəb(ə)l/|TRAK-tuh-bul|adj|easy to control or influence; (of a problem) easy to deal with|trattabile, docile, gestibile|manageable;compliant;docile|intractable;recalcitrant;unruly|Breaking the project into smaller steps made an overwhelming task far more *tractable*.|malleable
+vociferous|/voʊˈsɪfərəs/|voh-SIF-er-us|adj|expressing opinions in a loud and forceful way|veemente, rumoroso, vociante|vehement;clamorous;outspoken|quiet;silent;reticent|The plan to close the library met *vociferous* opposition from residents, who packed the town hall to protest.|fervent
+insipid|/ɪnˈsɪpɪd/|in-SIP-id|adj|lacking flavor, vigor, or interest|insipido, scialbo|bland;dull;vapid|exciting;flavorful;vibrant|The sequel was an *insipid* imitation of the original, with none of its wit or energy.|banal;hackneyed;prosaic;anodyne
+mundane|/mʌnˈdeɪn/|mun-DAYN|adj|lacking interest or excitement; dull; also, of this earthly world|ordinario, quotidiano, banale; terreno|ordinary;prosaic;humdrum|extraordinary;exciting;remarkable|Astronauts say that even in orbit, much of the day is spent on *mundane* tasks like cleaning and paperwork.|banal
+intrepid|/ɪnˈtrepɪd/|in-TREP-id|adj|fearless; adventurous|intrepido, impavido|fearless;bold;dauntless|timid;fearful;cowardly|The *intrepid* explorer crossed the desert alone, with only a camel and a compass.|
+venal|/ˈviːn(ə)l/|VEE-nul|adj|showing or motivated by susceptibility to bribery; corrupt|venale, corrotto|corrupt;bribable;mercenary|incorruptible;honest;principled|The *venal* official approved any building permit, provided the developer paid him enough.|
+anodyne|/ˈænəˌdaɪn/|AN-uh-dyne|adj|not likely to provoke dissent or offense; inoffensive, often deliberately so|innocuo, blando, insignificante|bland;inoffensive;innocuous|provocative;controversial;offensive|Worried about offending anyone, the committee replaced the bold slogan with an *anodyne* phrase that meant almost nothing.|insipid;banal;prosaic
+parsimonious|/ˌpɑːrsəˈmoʊniəs/|par-sih-MOH-nee-us|adj|unwilling to spend money or use resources; extremely frugal|parsimonioso, taccagno|stingy;miserly;tightfisted|generous;lavish;prodigal|The *parsimonious* billionaire reused tea bags and refused to heat his enormous mansion.|frugal
+polemical|/pəˈlemɪk(ə)l/|puh-LEM-ih-kul|adj|of or involving strongly critical or controversial writing or speech|polemico|controversial;contentious;combative|conciliatory;agreeable;uncontroversial|Her *polemical* essay attacked the entire economics profession and provoked dozens of angry replies.|caustic
+veracity|/vəˈræsəti/|vuh-RAS-uh-tee|noun|conformity to facts; accuracy; habitual truthfulness|veridicità, attendibilità|truthfulness;accuracy;honesty|falsehood;dishonesty;inaccuracy|Journalists spent weeks checking the *veracity* of the leaked documents before publishing a single line.|efficacy
+dearth|/dɜːrθ/|DURTH|noun|a scarcity or lack of something|penuria, carenza|scarcity;paucity;shortage|abundance;plethora;surplus|A *dearth* of qualified nurses has forced several rural hospitals to close their emergency rooms.|
+garner|/ˈɡɑːrnər/|GAR-ner|verb|to gather or collect something, especially information or approval|raccogliere, ottenere|gather;collect;amass|scatter;squander;lose|The documentary managed to *garner* critical acclaim despite its tiny budget.|
+candor|/ˈkændər/|KAN-der|noun|the quality of being open and honest; frankness|franchezza, sincerità|frankness;openness;honesty|evasiveness;deceit;secrecy|The senator's *candor* about her past mistakes surprised voters accustomed to carefully scripted answers.|`;
+
+const POS_IT = {adj:'agg.', verb:'verbo', noun:'sost.', adv:'avv.'};
+const sp = s => s ? s.split(';').map(x=>x.trim()).filter(Boolean) : [];
+const WORDS = RAW.trim().split('\n').map(l => {
+  const [w,ipa,resp,pos,def,it,syn,ant,ex,x] = l.split('|');
+  return {w,ipa,resp,pos,def,it,syn:sp(syn),ant:sp(ant),ex,x:sp(x)};
+});
+const BY = Object.fromEntries(WORDS.map(o => [o.w, o]));
+
+/* ---------- Utility ---------- */
+const DAY = 864e5;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hs = s => { let x = 2166136261; for (const ch of s) { x ^= ch.charCodeAt(0); x = Math.imul(x, 16777619); } return x >>> 0; };
+const keyOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const todayKey = () => keyOf(new Date());
+const startOfToday = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
+
+/* ---------- Salvataggio locale ---------- */
+const KEY = 'gre-lexicon-v1';
+const defaults = () => ({cards:{}, days:{}, quizzes:[], best:0, settings:{goal:20, newPerDay:10, sessionLen:20, showIt:false, voice:'en-US'}});
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const o = JSON.parse(raw); const d = defaults(); return {...d, ...o, settings:{...d.settings, ...(o.settings||{})}}; }
+  } catch(e) {}
+  return defaults();
+}
+let S = load();
+function save(){ S.best = Math.max(S.best||0, streak()); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+let ui = {tab:'home', filter:'all', q:'', quizMode:'mix', quizLen:10};
+try { const u = JSON.parse(localStorage.getItem(KEY+'-ui')||'null'); if (u) ui = {...ui, ...u, q:''}; } catch(e) {}
+const saveUi = () => { try { localStorage.setItem(KEY+'-ui', JSON.stringify(ui)); } catch(e) {} };
+
+/* ---------- Modello delle schede (ripetizione dilazionata) ---------- */
+const blank = () => ({ease:2.5, interval:0, reps:0, lapses:0, due:0, seen:false, last:0});
+const getC = w => S.cards[w] || blank();
+const ensure = w => (S.cards[w] ||= blank());
+const isDue = w => { const c = S.cards[w]; return !!c && c.seen && c.due <= Date.now(); };
+function level(w){
+  const c = S.cards[w];
+  if (!c || !c.seen) return 'new';
+  if (c.interval >= 21) return 'mastered';
+  if (c.interval >= 7) return 'review';
+  return 'learning';
+}
+const LEVEL = {new:['Nuova','p-new'], learning:['In apprendimento','p-learning'], review:['Consolidata','p-review'], mastered:['Padroneggiata','p-mastered']};
+const pill = w => { const [t,c] = LEVEL[level(w)]; return `<span class="pill ${c}">${t}</span>`; };
+function day(){ return (S.days[todayKey()] ||= {r:0, ok:0, q:0, qok:0, n:0}); }
+
+/* Esito di una valutazione: o la carta torna in coda in questa sessione (now), o riceve un nuovo intervallo in giorni (iv). */
+function outcome(c, st, r){
+  if (r === 'again') return {now:true};
+  if (r === 'hard' && st.h === 0 && (st.f > 0 || c.interval === 0)) return {now:true};
+  let iv;
+  if (r === 'hard') iv = c.interval === 0 ? 1 : Math.max(c.interval + 1, Math.round(c.interval * 1.2));
+  else if (st.f > 0) iv = 1;
+  else if (c.interval === 0) iv = st.h > 0 ? 1 : (c.reps === 0 && c.lapses === 0 ? 4 : 2);
+  else iv = Math.round(c.interval * c.ease);
+  return {iv: clamp(iv, 1, 365)};
+}
+function finalize(c, r, st){
+  const o = outcome(c, st, r);
+  if (r === 'hard' && st.h === 0) c.ease = Math.max(1.3, c.ease - 0.15);
+  if (r === 'easy' && st.f === 0 && st.h === 0 && c.interval > 0) c.ease = Math.min(3, c.ease + 0.1);
+  c.interval = o.iv; c.reps++; c.due = startOfToday() + o.iv * DAY;
+}
+const fmtIv = n => n === 1 ? 'domani' : n < 30 ? `tra ${n} g` : n < 365 ? `tra ${Math.round(n/30)} mesi` : 'tra 1 anno';
+function nextLabel(w){
+  const c = S.cards[w];
+  if (!c || !c.seen) return '—';
+  if (c.due <= Date.now()) return 'da ripassare';
+  const d = Math.round((c.due - startOfToday()) / DAY);
+  return d <= 1 ? 'domani' : `tra ${d} g`;
+}
+
+/* ---------- Statistiche ---------- */
+function streak(){
+  const met = k => { const d = S.days[k]; return !!d && (d.met || d.r >= S.settings.goal); };
+  const t = new Date(); let n = 0;
+  if (!met(keyOf(t))) t.setDate(t.getDate() - 1);
+  while (met(keyOf(t))) { n++; t.setDate(t.getDate() - 1); }
+  return n;
+}
+function stats(){
+  let due = 0, seen = 0, mastered = 0, learning = 0, review = 0;
+  for (const o of WORDS) {
+    const l = level(o.w);
+    if (l !== 'new') seen++;
+    if (l === 'mastered') mastered++; else if (l === 'learning') learning++; else if (l === 'review') review++;
+    if (isDue(o.w)) due++;
+  }
+  const d = day();
+  const newLeft = Math.min(Math.max(0, S.settings.newPerDay - d.n), WORDS.length - seen);
+  let r7 = 0, ok7 = 0;
+  for (let i = 0; i < 7; i++) { const t = new Date(); t.setDate(t.getDate() - i); const x = S.days[keyOf(t)]; if (x) { r7 += x.r; ok7 += x.ok; } }
+  return {due, seen, mastered, learning, review, newLeft, unseen: WORDS.length - seen, total: WORDS.length, acc: r7 ? Math.round(ok7 / r7 * 100) : null, r7};
+}
+const hardWords = () => WORDS.filter(o => { const c = S.cards[o.w]; return c && c.seen && (c.lapses > 0 || c.ease < 2.3); })
+  .sort((a,b) => (getC(b.w).lapses - getC(a.w).lapses) || (getC(a.w).ease - getC(b.w).ease));
+const FRESH_ORDER = WORDS.slice().sort((a,b) => hs(a.w) - hs(b.w));
+
+/* ---------- Icone ---------- */
+const I = {
+  home:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2 2.8 10.6a1 1 0 0 0 1.2 1.6l.9-.7V19a2 2 0 0 0 2 2h3.6v-5.4h3V21H17a2 2 0 0 0 2-2v-7.5l.9.7a1 1 0 1 0 1.2-1.6Z"/></svg>',
+  cards:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="15" rx="2.5"/><path d="M8 3h10.5A2.5 2.5 0 0 1 21 5.5V17"/></svg>',
+  quiz:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.8"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>',
+  speak:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6.5 8.5H3.5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3L11 19a.6.6 0 0 0 1-.5v-13A.6.6 0 0 0 11 5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.3 5.7a9 9 0 0 1 0 12.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  chev:'<svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m2 2 6 6-6 6"/></svg>',
+  x:'<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m2 2 10 10M12 2 2 12"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.2-6.5a1 1 0 0 0 0-1.7L9.5 4.6A1 1 0 0 0 8 5.5Z"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.5 3.5-2.8 5.2-2.8 8.4 0 1.3.8 2.4 2 2.6-.6-2 .9-3.6 2.3-4.6C14.3 12 18 13.5 18 17a6 6 0 1 1-12 0c0-5.5 5-8 6-15Z"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2 4 13.5h6.5L9.5 22 20 9.5h-6.6Z"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
+};
+
+function ring(p, color, size = 92, sw = 10){
+  const r = (size - sw) / 2, c = 2 * Math.PI * r, o = c * (1 - clamp(p, 0, 1)), m = size / 2;
+  return `<svg viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/>`+
+    `<circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${o.toFixed(2)}" transform="rotate(-90 ${m} ${m})" opacity="${p > 0 ? 1 : 0}"/></svg>`;
+}
+const speakBtn = w => ('speechSynthesis' in window) ? `<button class="speak" data-speak="${esc(w)}" aria-label="Ascolta la pronuncia di ${esc(w)}">${I.speak}</button>` : '';
+const markEx = ex => esc(ex).replace(/\*([^*]+)\*/, '<mark>$1</mark>');
+
+/* ---------- Audio ---------- */
+function speak(w){
+  try {
+    const u = new SpeechSynthesisUtterance(w);
+    u.lang = S.settings.voice; u.rate = 0.88;
+    const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_','-').startsWith(u.lang));
+    if (v.length) u.voice = v.find(x => /samantha|daniel|google|enhanced|premium/i.test(x.name)) || v[0];
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch(e) { toast('Audio non disponibile su questo dispositivo'); }
+}
+try { speechSynthesis.getVoices(); } catch(e) {}
+
+/* ---------- Toast & sheet ---------- */
+let toastT;
+function toast(msg){
+  document.querySelector('.toast')?.remove();
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.textContent = msg;
+  document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 2200);
+}
+function openSheet(html){
+  closeSheet();
+  const s = document.createElement('div'); s.className = 'scrim'; s.id = 'scrim';
+  s.innerHTML = `<div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div>`;
+  s.addEventListener('click', e => { if (e.target === s) closeSheet(); });
+  document.body.appendChild(s);
+}
+const closeSheet = () => $('#scrim')?.remove();
+
+/* ---------- Tab bar ---------- */
+function renderTabs(){
+  const due = stats().due;
+  const tabs = [['home','Oggi',I.home],['study','Studia',I.cards],['quiz','Quiz',I.quiz],['lex','Lessico',I.book]];
+  $('#tabs').innerHTML = tabs.map(([k,l,ic]) => `<button class="tab" data-tab="${k}" ${ui.tab===k?'aria-current="page"':''}><span class="ico">${ic}${k==='study'&&due?`<span class="badge">${due>99?'99+':due}</span>`:''}</span>${l}</button>`).join('');
+}
+function render(){
+  renderTabs();
+  const v = {home:renderHome, study:renderStudy, quiz:renderQuiz, lex:renderLex}[ui.tab] || renderHome;
+  $('#app').innerHTML = v();
+  if (ui.tab === 'lex') bindSearch();
+}
+
+/* ---------- Oggi ---------- */
+function coachLine(st){
+  const d = day(), g = S.settings.goal;
+  if (d.r >= g) return `Obiettivo raggiunto con <b>${d.r} risposte</b>. ${st.due ? `Restano ${st.due} parole in scadenza, se vuoi chiudere il giro.` : 'Un quiz breve aiuta a fissare le parole nel contesto.'}`;
+  if (st.due) return `Hai <b>${st.due} ${st.due===1?'parola':'parole'} da ripassare</b>. Partono prima delle nuove: servono circa ${Math.max(1, Math.round(st.due * 9 / 60))} minuti.`;
+  if (st.newLeft) return `Niente in scadenza. Oggi puoi aggiungere <b>${st.newLeft} parole nuove</b> al tuo lessico.`;
+  if (st.unseen === 0 && st.seen) return 'Hai visto tutte le parole del mazzo. Ora il lavoro è farle arrivare a «padroneggiata» con quiz e ripassi.';
+  return 'Sei in pari con ripassi e parole nuove. Prova un quiz Text Completion per testare il lessico nel contesto.';
+}
+function weekChart(){
+  const g = S.settings.goal, days = [];
+  for (let i = 6; i >= 0; i--) { const t = new Date(); t.setDate(t.getDate() - i); const x = S.days[keyOf(t)] || {r:0}; days.push({lbl:'DLMMGVS'[t.getDay()], v:x.r, today:i===0}); }
+  const max = Math.max(g, ...days.map(d => d.v)) * 1.1, W = 320, H = 130, top = 10, base = 106, bw = 26, step = W / 7;
+  const y = v => base - (v / max) * (base - top);
+  const bars = days.map((d, i) => {
+    const x = i * step + (step - bw) / 2, h = Math.max(d.v ? 3 : 0, base - y(d.v));
+    const col = d.v >= g ? 'var(--goal)' : 'rgba(255,159,67,.45)';
+    return `<rect x="${x.toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="6" fill="${col}"/>`+
+      `<text x="${(x + bw/2).toFixed(1)}" y="${base + 18}" text-anchor="middle" font-size="12" font-weight="${d.today?700:500}" fill="${d.today?'var(--fg)':'var(--fg3)'}">${d.lbl}</text>`+
+      (d.v ? `<text x="${(x + bw/2).toFixed(1)}" y="${(base - h - 5).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--fg2)">${d.v}</text>` : '');
+  }).join('');
+  const gy = y(g).toFixed(1);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Risposte negli ultimi 7 giorni"><line x1="0" x2="${W}" y1="${base}" y2="${base}" stroke="var(--sep)"/><line x1="0" x2="${W}" y1="${gy}" y2="${gy}" stroke="var(--fg3)" stroke-dasharray="4 4"/>${bars}</svg>`;
+}
+function renderHome(){
+  const st = stats(), d = day(), g = S.settings.goal, sk = streak();
+  const date = new Date().toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
+  const wotd = WORDS[hs(todayKey()) % WORDS.length];
+  const hard = hardWords().slice(0, 5);
+  const pm = Math.round(st.mastered / st.total * 100);
+  const total = Math.min(st.due, S.settings.sessionLen) + Math.min(st.newLeft, Math.max(0, S.settings.sessionLen - st.due));
+  return `
+  <header class="top"><div><div class="eyebrow">${date}</div><h1>Oggi</h1></div><button class="icon-btn" data-act="settings" aria-label="Impostazioni">${I.gear}</button></header>
+  <section class="card rings" aria-label="Riepilogo di oggi">
+    <button class="ring-btn" data-info="goal"><div class="ring-wrap">${ring(d.r/g,'var(--goal)')}<div class="ring-val">${d.r}<small>di ${g}</small></div></div><span class="ring-lbl"><i class="dot" style="background:var(--goal)"></i>Obiettivo</span></button>
+    <button class="ring-btn" data-info="mastery"><div class="ring-wrap">${ring(st.mastered/st.total,'var(--mastery)')}<div class="ring-val">${pm}%<small>${st.mastered}/${st.total}</small></div></div><span class="ring-lbl"><i class="dot" style="background:var(--mastery)"></i>Padronanza</span></button>
+    <button class="ring-btn" data-info="streak"><div class="ring-wrap">${ring(sk/7,'var(--streak)')}<div class="ring-val">${sk}<small>${sk===1?'giorno':'giorni'}</small></div></div><span class="ring-lbl"><i class="dot" style="background:var(--streak)"></i>Serie</span></button>
+  </section>
+  <p class="coach">${coachLine(st)}</p>
+  <button class="cta" data-act="start-normal" ${total?'':'disabled'}>
+    <span class="ic">${I.play}</span>
+    <span><span class="t">${total ? 'Inizia la sessione' : 'Sessione completata'}</span><br><span class="s">${st.due} da ripassare · ${st.newLeft} nuove</span></span>
+    <span class="chev">${I.chev}</span>
+  </button>
+  <button class="row-btn" data-act="quick-quiz"><span class="ic" style="background:var(--accent-soft);color:#86A6FF">${I.bolt}</span><span><span class="t">Quiz lampo</span><br><span class="s">5 domande miste, pesate sulle parole difficili</span></span><span class="chev">${I.chev}</span></button>
+
+  <h2 class="sec">Monitor del lessico</h2>
+  <div class="grid">
+    <div class="tile"><span class="k">Da ripassare</span><span class="v">${st.due}</span></div>
+    <div class="tile"><span class="k">In apprendimento</span><span class="v">${st.learning}</span></div>
+    <div class="tile"><span class="k">Consolidate</span><span class="v">${st.review}</span></div>
+    <div class="tile"><span class="k">Padroneggiate</span><span class="v">${st.mastered}</span></div>
+    <div class="tile"><span class="k">Mai viste</span><span class="v">${st.unseen}</span></div>
+    <div class="tile"><span class="k">Precisione 7 g</span><span class="v">${st.acc===null?'—':st.acc+'<small>%</small>'}</span></div>
+  </div>
+
+  <h2 class="sec">Ultimi 7 giorni <small>record serie: ${S.best||0}</small></h2>
+  <div class="card chart"><div class="chart-cap"><span>Risposte al giorno</span><span>tratteggio = obiettivo <b>${g}</b></span></div>${weekChart()}</div>
+
+  <h2 class="sec">Parola del giorno</h2>
+  <div class="card wotd">
+    <div style="display:flex;align-items:center;gap:10px;justify-content:space-between"><button data-word="${wotd.w}" class="w" style="font-family:var(--read)">${wotd.w}</button>${speakBtn(wotd.w)}</div>
+    <div class="pron"><span class="resp">${wotd.resp}</span><span>${wotd.ipa}</span><span>· ${POS_IT[wotd.pos]}</span></div>
+    <div class="d">${esc(wotd.def)}</div>
+    <p class="ex" style="font-size:16px;color:var(--fg2)">${markEx(wotd.ex)}</p>
+  </div>
+
+  <h2 class="sec">Parole difficili</h2>
+  <div class="wlist">${hard.length ? hard.map(o => wordRow(o, `<span class="pill p-bad">${getC(o.w).lapses} ${getC(o.w).lapses===1?'errore':'errori'}</span>`)).join('') : '<div class="empty">Qui finiscono le parole che sbagli o segni come «così così». Per ora nessuna.</div>'}</div>
+  `;
+}
+const INFO = {
+  goal: () => ['Obiettivo giornaliero', `Conta ogni risposta di oggi, sia nelle flashcard sia nei quiz. L'obiettivo è ${S.settings.goal} risposte: lo cambi dall'ingranaggio in alto. Raggiungerlo tiene viva la serie.`],
+  mastery: () => { const s = stats(); return ['Padronanza', `Una parola è padroneggiata quando il prossimo ripasso è ad almeno 21 giorni: vuol dire che l'hai riconosciuta più volte di fila a distanza crescente. Ora sono ${s.mastered} su ${s.total}. Se la sbagli, torna in apprendimento.`]; },
+  streak: () => ['Serie', `Giorni consecutivi in cui hai raggiunto l'obiettivo. L'anello si riempie a 7 giorni. Il tuo record è ${S.best||0}.`]
+};
+
+/* ---------- Studia ---------- */
+function renderStudy(){
+  const st = stats(), hard = hardWords().length;
+  const ahead = WORDS.filter(o => { const c = S.cards[o.w]; return c && c.seen && c.due > Date.now(); }).length;
+  const total = Math.min(st.due, S.settings.sessionLen) + Math.min(st.newLeft, Math.max(0, S.settings.sessionLen - st.due));
+  return `
+  <header class="top"><div><div class="eyebrow">Flashcard</div><h1>Studia</h1></div><button class="icon-btn" data-act="settings" aria-label="Impostazioni">${I.gear}</button></header>
+  <div class="card" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="tile" style="background:var(--raised)"><span class="k">Da ripassare</span><span class="v" style="color:var(--goal)">${st.due}</span></div>
+      <div class="tile" style="background:var(--raised)"><span class="k">Nuove di oggi</span><span class="v" style="color:#86A6FF">${st.newLeft}</span></div>
+    </div>
+    <button class="big-btn" data-act="start-normal" ${total?'':'disabled'}>${total ? `Inizia · ${total} carte` : 'Niente in programma oggi'}</button>
+  </div>
+  <h2 class="sec">Altri allenamenti</h2>
+  <div class="stack">
+    <button class="row-btn" data-act="start-hard" ${hard?'':'disabled'}><span class="ic" style="background:var(--bad-soft);color:var(--bad)">${I.flame}</span><span><span class="t">Parole difficili</span><br><span class="s">${hard ? `${hard} parole sbagliate o incerte` : 'Nessuna per ora'}</span></span><span class="chev">${I.chev}</span></button>
+    <button class="row-btn" data-act="start-more" ${st.unseen?'':'disabled'}><span class="ic" style="background:var(--accent-soft);color:#86A6FF">${I.plus}</span><span><span class="t">5 parole nuove extra</span><br><span class="s">Oltre il limite giornaliero · ${st.unseen} mai viste</span></span><span class="chev">${I.chev}</span></button>
+    <button class="row-btn" data-act="start-ahead" ${ahead?'':'disabled'}><span class="ic" style="background:var(--streak-soft);color:var(--streak)">${I.clock}</span><span><span class="t">Ripasso anticipato</span><br><span class="s">Le parole con la scadenza più vicina</span></span><span class="chev">${I.chev}</span></button>
+  </div>
+  <h2 class="sec">Come funziona</h2>
+  <div class="card stack" style="gap:12px;font-size:14px">
+    <div style="display:flex;gap:10px"><span class="pill p-bad" style="flex:none">Non la so</span><span class="muted">Torna tra 3 carte, nella stessa sessione, finché non la riconosci. L'intervallo riparte da zero.</span></div>
+    <div style="display:flex;gap:10px"><span class="pill p-learning" style="flex:none">Così così</span><span class="muted">Se è nuova o l'hai appena sbagliata la rivedi ancora una volta oggi; altrimenti l'intervallo cresce poco.</span></div>
+    <div style="display:flex;gap:10px"><span class="pill p-mastered" style="flex:none">La so bene</span><span class="muted">L'intervallo si moltiplica (4 g → 10 g → 27 g…): la vedrai sempre più di rado.</span></div>
+    <div class="muted" style="font-size:13px">Dopo aver girato la carta puoi anche scorrere: a sinistra «Non la so», a destra «La so bene».</div>
+  </div>`;
+}
+
+/* ---------- Sessione flashcard ---------- */
+let sess = null;
+function buildQueue(kind, list){
+  const len = S.settings.sessionLen;
+  if (kind === 'list') return list.slice();
+  if (kind === 'hard') return hardWords().slice(0, len).map(o => o.w);
+  if (kind === 'ahead') return WORDS.filter(o => { const c = S.cards[o.w]; return c && c.seen && c.due > Date.now(); }).sort((a,b) => getC(a.w).due - getC(b.w).due).slice(0, len).map(o => o.w);
+  const fresh = FRESH_ORDER.filter(o => !getC(o.w).seen).map(o => o.w);
+  if (kind === 'more') return fresh.slice(0, 5);
+  const due = WORDS.filter(o => isDue(o.w)).sort((a,b) => getC(a.w).due - getC(b.w).due).map(o => o.w);
+  const nw = fresh.slice(0, stats().newLeft);
+  const q = [];
+  while (q.length < len && (due.length || nw.length)) {
+    for (let i = 0; i < 2 && due.length && q.length < len; i++) q.push(due.shift());
+    if (nw.length && q.length < len) q.push(nw.shift());
+  }
+  return q;
+}
+function startStudy(kind, list){
+  const q = buildQueue(kind, list);
+  if (!q.length) { toast('Nessuna carta per questa modalità'); return; }
+  closeSheet();
+  sess = {queue:q, total:q.length, done:new Set(), st:{}, count:{again:0, hard:0, easy:0}, cur:null, flipped:false, showIt:S.settings.showIt};
+  nextCard();
+}
+function nextCard(){
+  if (!sess.queue.length) return finishStudy();
+  sess.cur = sess.queue.shift(); sess.flipped = false; sess.showIt = S.settings.showIt;
+  renderStudyScreen();
+}
+function backFace(o, showIt){
+  return `
+    <div class="hd"><span class="w">${o.w}</span><span class="pos">${POS_IT[o.pos]}</span>${speakBtn(o.w)}</div>
+    <div class="def">${esc(o.def)}</div>
+    ${showIt ? `<div class="it-box">🇮🇹 ${esc(o.it)}</div>` : `<button class="it-toggle" data-act="show-it">Mostra in italiano</button>`}
+    ${o.syn.length ? `<div class="blk"><span class="lb">Sinonimi</span><div class="tags">${o.syn.map(s => `<span class="tag t-syn">${esc(s)}</span>`).join('')}</div></div>` : ''}
+    ${o.ant.length ? `<div class="blk"><span class="lb">Contrari</span><div class="tags">${o.ant.map(s => `<span class="tag t-ant">${esc(s)}</span>`).join('')}</div></div>` : ''}
+    <div class="blk"><span class="lb">Nel contesto GRE</span><p class="ex">${markEx(o.ex)}</p></div>`;
+}
+function renderStudyScreen(){
+  const o = BY[sess.cur];
+  const pct = sess.done.size / sess.total * 100;
+  $('#layer').innerHTML = `
+  <div class="ov" id="study"><div class="ov-in">
+    <div class="ov-head"><button class="icon-btn" data-act="close-study" aria-label="Chiudi sessione">${I.x}</button><div class="pbar" role="progressbar" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div><span class="count">${sess.done.size}/${sess.total}</span></div>
+    <div class="stage">
+      <div class="fc ${sess.flipped?'flipped':''}" id="fc">
+        <div class="fc-move" id="fcm">
+          <span class="swipe-tag r" id="tagR">LA SO</span><span class="swipe-tag l" id="tagL">NON LA SO</span>
+          <div class="fc-in">
+            <div class="face front">
+              ${pill(o.w)}<span class="pos">${POS_IT[o.pos]}</span>
+              <div class="w">${o.w}</div>
+              <div class="pron"><span class="resp">${o.resp}</span><span>${o.ipa}</span></div>
+              ${speakBtn(o.w)}
+              <div class="tap">Tocca la carta per girarla</div>
+            </div>
+            <div class="face back" id="back">${backFace(o, sess.showIt)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="controls" id="ctrl">${controlsHtml()}</div>
+  </div></div>`;
+  bindSwipe();
+}
+function controlsHtml(){
+  const c = getC(sess.cur), st = sess.st[sess.cur] || {f:0, h:0};
+  const lbl = r => { const x = outcome(c, st, r); return x.now ? (r === 'again' ? 'tra 3 carte' : 'più tardi') : fmtIv(x.iv); };
+  return sess.flipped ? `
+      <div class="rate-row">
+        <button class="rate again" data-rate="again"><span class="t">Non la so</span><span class="s">${lbl('again')}</span></button>
+        <button class="rate hard" data-rate="hard"><span class="t">Così così</span><span class="s">${lbl('hard')}</span></button>
+        <button class="rate easy" data-rate="easy"><span class="t">La so bene</span><span class="s">${lbl('easy')}</span></button>
+      </div><div class="hint-line">Scorri ← non la so · la so bene →</div>` :
+      `<button class="big-btn" data-act="flip">Mostra il significato</button><div class="hint-line">Prova a ricordare definizione e un sinonimo prima di girare</div>`;
+}
+function flip(){
+  if (!sess) return;
+  sess.flipped = !sess.flipped;
+  $('#fc').classList.toggle('flipped', sess.flipped);
+  if (sess.flipped) { const scroll = $('#back'); if (scroll) scroll.scrollTop = 0; }
+  $('#ctrl').innerHTML = controlsHtml();
+}
+function rate(r){
+  if (!sess || !sess.flipped) return;
+  const w = sess.cur, c = ensure(w), st = (sess.st[w] ||= {f:0, h:0}), d = day(), now = Date.now();
+  if (!c.seen) { c.seen = true; d.n++; }
+  d.r++; if (r !== 'again') d.ok++;
+  if (d.r >= S.settings.goal) d.met = true;
+  sess.count[r]++; c.last = now;
+  const o = outcome(c, st, r);
+  if (r === 'again') {
+    if (c.interval > 0) c.lapses++;
+    c.ease = Math.max(1.3, c.ease - 0.2); c.interval = 0; c.reps = 0; c.due = now; st.f++;
+    sess.queue.splice(Math.min(3, sess.queue.length), 0, w);
+  } else if (o.now) {
+    c.ease = Math.max(1.3, c.ease - 0.15); c.due = now; st.h++;
+    sess.queue.splice(Math.min(6, sess.queue.length), 0, w);
+  } else {
+    finalize(c, r, st); sess.done.add(w);
+  }
+  save();
+  const m = $('#fcm');
+  if (m && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    m.classList.remove('drag');
+    m.style.transform = `translateX(${r === 'again' ? -120 : r === 'easy' ? 120 : 0}%) translateY(${r === 'hard' ? -30 : 0}px) rotate(${r === 'again' ? -12 : r === 'easy' ? 12 : 0}deg)`;
+    m.style.opacity = '0';
+    setTimeout(nextCard, 220);
+  } else nextCard();
+}
+function bindSwipe(){
+  const fc = $('#fc'), m = $('#fcm'); if (!fc) return;
+  let x0 = 0, y0 = 0, dx = 0, active = false, moved = false;
+  fc.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    active = true; moved = false; x0 = e.clientX; y0 = e.clientY; dx = 0;
+  });
+  fc.addEventListener('pointermove', e => {
+    if (!active) return;
+    dx = e.clientX - x0; const dy = e.clientY - y0;
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+    if (!sess.flipped || Math.abs(dx) < Math.abs(dy)) return;
+    try { fc.setPointerCapture(e.pointerId); } catch(_) {}
+    m.classList.add('drag');
+    m.style.transform = `translateX(${dx}px) rotate(${dx / 22}deg)`;
+    $('#tagR').style.opacity = clamp(dx / 90, 0, 1);
+    $('#tagL').style.opacity = clamp(-dx / 90, 0, 1);
+  });
+  const end = () => {
+    if (!active) return; active = false;
+    if (!moved) { flip(); return; }
+    if (sess.flipped && Math.abs(dx) > 90) { rate(dx > 0 ? 'easy' : 'again'); return; }
+    m.classList.remove('drag'); m.style.transform = '';
+    $('#tagR').style.opacity = 0; $('#tagL').style.opacity = 0;
+  };
+  fc.addEventListener('pointerup', end);
+  fc.addEventListener('pointercancel', () => { active = false; m.classList.remove('drag'); m.style.transform = ''; });
+}
+function finishStudy(){
+  const c = sess.count, n = sess.total, d = day();
+  const words = [...sess.done];
+  $('#layer').innerHTML = `
+  <div class="ov"><div class="ov-in" style="justify-content:center;gap:18px">
+    <div class="result">
+      <div class="ring-wrap" style="width:120px;height:120px">${ring(d.r / S.settings.goal, 'var(--goal)', 120, 12)}<div class="ring-val" style="font-size:28px">${d.r}<small>di ${S.settings.goal} oggi</small></div></div>
+      <h2>Sessione completata</h2>
+      <p>${n} ${n===1?'parola ripassata':'parole ripassate'}. ${d.r >= S.settings.goal ? 'Obiettivo di oggi raggiunto.' : `Mancano ${S.settings.goal - d.r} risposte all'obiettivo.`}</p>
+    </div>
+    <div class="sumrow">
+      <div class="tile"><span class="k" style="color:var(--bad)">Non la so</span><span class="v">${c.again}</span></div>
+      <div class="tile"><span class="k" style="color:var(--goal)">Così così</span><span class="v">${c.hard}</span></div>
+      <div class="tile"><span class="k" style="color:var(--mastery)">La so bene</span><span class="v">${c.easy}</span></div>
+    </div>
+    <div class="stack">
+      <button class="big-btn" data-act="quiz-session" data-words="${words.join(',')}">Mettile alla prova in un quiz</button>
+      <button class="big-btn sec" data-act="close-study">Torna all'app</button>
+    </div>
+  </div></div>`;
+  sess = null;
+}
+function closeOverlay(){ $('#layer').innerHTML = ''; sess = null; qz = null; render(); }
+
+/* ---------- Quiz ---------- */
+const QT = {
+  tc: {name:'Text Completion', instr:'Scegli la parola che completa meglio la frase.'},
+  se: {name:'Sentence Equivalence', instr:'Scegli le DUE parole che completano la frase e le danno lo stesso significato.'},
+  def:{name:'Definizione', instr:'Quale parola corrisponde a questa definizione?'}
+};
+function related(a, b){
+  if (a.syn.includes(b.w) || b.syn.includes(a.w) || a.x.includes(b.w) || b.x.includes(a.w)) return true;
+  return a.syn.some(s => b.syn.includes(s));
+}
+function makeQ(o, type){
+  const pool = WORDS.filter(x => x !== o && x.pos === o.pos && !related(o, x));
+  if (type === 'se') {
+    const s = o.syn.find(x => /^[a-z]+$/i.test(x) && !BY[x]) || o.syn.find(x => /^[a-z-]+$/i.test(x));
+    if (!s) return makeQ(o, 'tc');
+    const p2 = pool.filter(x => !x.syn.includes(s));
+    const d = pick(p2, 4).map(x => x.w);
+    if (d.length < 4) return makeQ(o, 'tc');
+    return {type, w:o.w, opts:shuffle([o.w, s, ...d]), correct:[o.w, s], sel:[], done:false};
+  }
+  const d = pick(pool, 4).map(x => x.w);
+  return {type, w:o.w, opts:shuffle([o.w, ...d]), correct:[o.w], sel:[], done:false};
+}
+function chooseTargets(n, list){
+  if (list && list.length) return shuffle(list).slice(0, n).map(w => BY[w]);
+  const seen = WORDS.filter(o => getC(o.w).seen);
+  const base = seen.length >= n ? seen : WORDS;
+  const items = base.map(o => { const c = getC(o.w); return {o, wt: 1 + c.lapses * 2 + (c.seen && c.interval < 7 ? 2 : 0) + (isDue(o.w) ? 2 : 0) + (c.ease < 2.3 ? 1 : 0)}; });
+  const out = [];
+  while (out.length < n && items.length) {
+    let t = Math.random() * items.reduce((s, i) => s + i.wt, 0), k = 0;
+    while ((t -= items[k].wt) > 0) k++;
+    out.push(items.splice(k, 1)[0].o);
+  }
+  return out;
+}
+let qz = null;
+function startQuiz(mode, n, list){
+  closeSheet();
+  const types = mode === 'mix' ? ['tc','tc','se','def'] : [mode];
+  const qs = chooseTargets(n, list).map(o => makeQ(o, types[Math.floor(Math.random() * types.length)]));
+  if (!qs.length) return;
+  qz = {mode, qs, i:0, score:0};
+  renderQ();
+}
+const blankify = ex => esc(ex).replace(/\b(a|an|A|An) \*/g, (m, a) => (a[0] === 'A' ? 'A' : 'a') + '(n) *').replace(/\*[^*]+\*/, '<span class="blank" aria-label="spazio vuoto"></span>');
+function renderQ(){
+  const q = qz.qs[qz.i], o = BY[q.w], t = QT[q.type];
+  const L = 'ABCDEF';
+  const optCls = w => !q.done ? '' : q.correct.includes(w) ? 'ok' : q.sel.includes(w) ? 'no' : '';
+  const isOk = q.done && q.sel.length === q.correct.length && q.sel.every(s => q.correct.includes(s));
+  $('#layer').innerHTML = `
+  <div class="ov"><div class="ov-in">
+    <div class="ov-head"><button class="icon-btn" data-act="close-quiz" aria-label="Chiudi quiz">${I.x}</button><div class="pbar"><i style="width:${(qz.i + (q.done?1:0)) / qz.qs.length * 100}%"></i></div><span class="count">${qz.i + 1}/${qz.qs.length}</span></div>
+    <div class="q-scroll" id="qs">
+      <div class="q-type">${t.name}</div>
+      <p class="q-instr">${t.instr}</p>
+      <p class="q-text">${q.type === 'def' ? esc(o.def) : blankify(o.ex)}</p>
+      <div class="opts">${q.opts.map((w, i) => `<button class="opt ${q.type==='se'?'se':''} ${optCls(w)}" data-opt="${esc(w)}" aria-pressed="${q.sel.includes(w)}" ${q.done?'disabled':''}><span class="let">${L[i]}</span><span class="ow">${esc(w)}</span></button>`).join('')}</div>
+      ${q.done ? `<div class="fb">
+        <div class="res ${isOk?'good':'bad'}">${isOk ? 'Corretto' : 'Non esatto'}${isOk ? '' : ` · ${q.correct.map(esc).join(' + ')}`}</div>
+        <div class="hd" style="display:flex;align-items:center;gap:10px"><button data-word="${o.w}" style="font-family:var(--read);font-size:24px;font-weight:500">${o.w}</button><span class="muted" style="font-size:14px">${o.resp}</span>${speakBtn(o.w)}</div>
+        <div style="font-size:15px">${esc(o.def)}</div>
+        <div class="it-box">🇮🇹 ${esc(o.it)}</div>
+        ${q.type !== 'def' ? `<p class="ex">${markEx(o.ex)}</p>` : ''}
+        ${q.type === 'se' ? `<div class="muted" style="font-size:13px">In Sentence Equivalence servono entrambe le parole giuste: una sola non dà punti.</div>` : ''}
+      </div>` : ''}
+    </div>
+    <div class="controls">${q.done
+      ? `<button class="big-btn" data-act="q-next">${qz.i + 1 < qz.qs.length ? 'Avanti' : 'Vedi il risultato'}</button>`
+      : q.type === 'se' ? `<button class="big-btn" data-act="q-check" ${q.sel.length === 2 ? '' : 'disabled'}>${q.sel.length === 2 ? 'Verifica' : `Seleziona ${2 - q.sel.length} ${2 - q.sel.length === 1 ? 'parola' : 'parole'}`}</button>` : ''}</div>
+  </div></div>`;
+}
+function answerQ(){
+  const q = qz.qs[qz.i];
+  q.done = true;
+  const ok = q.sel.length === q.correct.length && q.sel.every(s => q.correct.includes(s));
+  if (ok) qz.score++;
+  const c = ensure(q.w), d = day(), now = Date.now();
+  d.r++; d.q++; if (ok) { d.ok++; d.qok++; }
+  if (d.r >= S.settings.goal) d.met = true;
+  if (ok) { if (!c.seen || c.interval === 0 || c.due <= now) { c.seen = true; finalize(c, 'easy', {f:0, h:0}); } }
+  else { c.seen = true; if (c.interval > 0) c.lapses++; else c.lapses = Math.max(c.lapses, 1); c.ease = Math.max(1.3, c.ease - 0.2); c.interval = 0; c.reps = 0; c.due = now; }
+  c.last = now; q.ok = ok;
+  save(); renderQ();
+  const fb = document.querySelector('.fb'); if (fb) fb.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function finishQuiz(){
+  const n = qz.qs.length, s = qz.score, miss = qz.qs.filter(q => !q.ok).map(q => q.w);
+  S.quizzes = [{t:Date.now(), mode:qz.mode, s, n}, ...(S.quizzes || [])].slice(0, 12); save();
+  const msg = s === n ? 'Tutte giuste. Queste parole si allontanano nel calendario dei ripassi.' : s / n >= .7 ? 'Buon risultato. Le parole sbagliate tornano nel ripasso di oggi.' : 'Le parole sbagliate sono già in coda per il ripasso: ripassale subito finché sono fresche.';
+  $('#layer').innerHTML = `
+  <div class="ov"><div class="ov-in" style="gap:16px;overflow-y:auto">
+    <div class="result" style="padding-top:20px">
+      <div class="ring-wrap" style="width:120px;height:120px">${ring(s / n, s / n >= .7 ? 'var(--mastery)' : 'var(--goal)', 120, 12)}<div class="ring-val" style="font-size:30px">${s}<small>su ${n}</small></div></div>
+      <h2>${Math.round(s / n * 100)}% corrette</h2><p>${msg}</p>
+    </div>
+    ${miss.length ? `<h2 class="sec">Da rivedere</h2><div class="wlist">${miss.map(w => wordRow(BY[w], '<span class="pill p-bad">sbagliata</span>')).join('')}</div>` : ''}
+    <div class="stack" style="margin-top:auto">
+      ${miss.length ? `<button class="big-btn" data-act="study-list" data-words="${miss.join(',')}">Ripassa ora gli errori</button>` : ''}
+      <button class="big-btn ${miss.length ? 'sec' : ''}" data-act="close-quiz">Torna all'app</button>
+    </div>
+  </div></div>`;
+  qz = null;
+}
+function renderQuiz(){
+  const modes = [
+    ['tc', QT.tc.name, 'Una frase con uno spazio vuoto e cinque opzioni, come nella sezione Verbal.', 'The results were ______: some patients improved, but just as many showed no change.'],
+    ['se', QT.se.name, 'Sei opzioni, due risposte giuste che producono frasi equivalenti.', 'Scegli due parole: entrambe devono funzionare e significare la stessa cosa.'],
+    ['def', QT.def.name, 'Dalla definizione inglese alla parola. Utile per fissare il significato.', ''],
+    ['mix', 'Misto', 'Text Completion, Sentence Equivalence e definizioni insieme.', '']
+  ];
+  const st = stats();
+  const hist = (S.quizzes || []).slice(0, 5);
+  return `
+  <header class="top"><div><div class="eyebrow">Verbal Reasoning</div><h1>Quiz</h1></div><button class="icon-btn" data-act="settings" aria-label="Impostazioni">${I.gear}</button></header>
+  <div class="stack">${modes.map(([k, t, s, ex]) => `<button class="mode" data-mode="${k}" aria-pressed="${ui.quizMode === k}"><span class="h"><span class="t">${t}</span>${ui.quizMode === k ? '<span class="pill p-review">scelto</span>' : ''}</span><span class="s">${s}</span>${ex ? `<span class="ex">${esc(ex)}</span>` : ''}</button>`).join('')}</div>
+  <div class="card stack" style="gap:12px">
+    <div class="set-row" style="padding:0;border:0"><span class="lbl">Domande</span><div class="seg">${[5,10,20].map(n => `<button data-qlen="${n}" aria-pressed="${ui.quizLen === n}">${n}</button>`).join('')}</div></div>
+    <button class="big-btn" data-act="start-quiz">Inizia il quiz</button>
+    <div class="muted" style="font-size:13px">Le domande pescano di più dalle parole che sbagli o che hai visto da poco. ${st.seen < ui.quizLen ? 'Finché ne hai viste poche, il quiz usa tutto il mazzo.' : ''}</div>
+  </div>
+  <h2 class="sec">Ultimi quiz ${st.acc !== null ? `<small>precisione 7 g: ${st.acc}%</small>` : ''}</h2>
+  <div class="wlist">${hist.length ? hist.map(h => `<div class="witem"><div class="main"><div style="font-weight:600">${h.mode === 'mix' ? 'Misto' : QT[h.mode].name}</div><div class="it">${new Date(h.t).toLocaleDateString('it-IT', {day:'numeric', month:'short'})} · ${new Date(h.t).toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'})}</div></div><div class="side"><span class="pill ${h.s / h.n >= .7 ? 'p-mastered' : 'p-learning'}">${h.s}/${h.n}</span></div></div>`).join('') : '<div class="empty">I risultati dei tuoi quiz compariranno qui.</div>'}</div>`;
+}
+
+/* ---------- Lessico ---------- */
+function wordRow(o, side){
+  return `<button class="witem" data-word="${o.w}"><div class="main"><div class="w">${o.w}<em>${POS_IT[o.pos]}</em></div><div class="it">${esc(o.it)}</div></div><div class="side">${side || pill(o.w)}<span class="nx">${nextLabel(o.w)}</span></div></button>`;
+}
+const FILTERS = [['all','Tutte'],['due','Da ripassare'],['new','Nuove'],['learning','In apprendimento'],['review','Consolidate'],['mastered','Padroneggiate'],['hard','Difficili']];
+function filterWords(f, q){
+  const hardSet = new Set(hardWords().map(o => o.w));
+  q = (q || '').trim().toLowerCase();
+  return WORDS.filter(o => {
+    if (f === 'due' && !isDue(o.w)) return false;
+    if (f === 'hard' && !hardSet.has(o.w)) return false;
+    if (['new','learning','review','mastered'].includes(f) && level(o.w) !== f) return false;
+    if (q && !(o.w.includes(q) || o.it.toLowerCase().includes(q) || o.syn.some(s => s.includes(q)))) return false;
+    return true;
+  }).sort((a,b) => a.w.localeCompare(b.w));
+}
+function lexList(){
+  const list = filterWords(ui.filter, ui.q);
+  return list.length ? list.map(o => wordRow(o)).join('') : `<div class="empty">Nessuna parola${ui.q ? ` per «${esc(ui.q)}»` : ' in questo gruppo'}.</div>`;
+}
+function renderLex(){
+  return `
+  <header class="top"><div><div class="eyebrow">${WORDS.length} parole ad alta frequenza</div><h1>Lessico</h1></div><button class="icon-btn" data-act="settings" aria-label="Impostazioni">${I.gear}</button></header>
+  <label class="search">${I.search}<input id="q" type="search" placeholder="Cerca parola, sinonimo o traduzione" value="${esc(ui.q)}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+  <div class="chips">${FILTERS.map(([k, l]) => `<button class="chip" data-filter="${k}" aria-pressed="${ui.filter === k}">${l}<span class="n">${filterWords(k, '').length}</span></button>`).join('')}</div>
+  <div class="wlist" id="lexlist">${lexList()}</div>`;
+}
+function bindSearch(){
+  const i = $('#q'); if (!i) return;
+  i.addEventListener('input', () => { ui.q = i.value; $('#lexlist').innerHTML = lexList(); });
+}
+function openWord(w){
+  const o = BY[w], c = getC(w);
+  openSheet(`
+    <div class="sh-head"><div>${pill(w)}</div><button class="close" data-act="close-sheet" aria-label="Chiudi">${I.x}</button></div>
+    <div class="back-like">
+      <div class="pron" style="margin-bottom:-8px"><span class="resp">${o.resp}</span><span>${o.ipa}</span></div>
+      ${backFace(o, true)}
+    </div>
+    <div class="kv">
+      <div><span>Prossimo</span><b>${nextLabel(w)}</b></div>
+      <div><span>Intervallo</span><b>${c.interval ? c.interval + ' g' : '—'}</b></div>
+      <div><span>Errori</span><b>${c.lapses}</b></div>
+      <div><span>Facilità</span><b>${c.seen ? c.ease.toFixed(1) : '—'}</b></div>
+    </div>
+    <div class="btn-row">
+      <button class="big-btn" data-act="study-list" data-words="${w}">Ripassala ora</button>
+      <button class="big-btn sec" data-act="quiz-session" data-words="${w}">Quiz su questa</button>
+    </div>
+    ${c.seen ? `<button class="danger" data-act="reset-word" data-w="${w}">Azzera i progressi di questa parola</button>` : ''}`);
+}
+
+/* ---------- Impostazioni ---------- */
+function openSettings(){
+  const s = S.settings;
+  const seg = (k, vals, fmt = v => v) => `<div class="seg">${vals.map(v => `<button data-set="${k}" data-val="${v}" aria-pressed="${s[k] === v}">${fmt(v)}</button>`).join('')}</div>`;
+  openSheet(`
+    <div class="sh-head"><h3>Impostazioni</h3><button class="close" data-act="close-sheet" aria-label="Chiudi">${I.x}</button></div>
+    <div>
+      <div class="set-row"><span class="lbl">Obiettivo giornaliero</span><span class="hint">Risposte al giorno, tra flashcard e quiz.</span>${seg('goal', [10,20,30,50])}</div>
+      <div class="set-row"><span class="lbl">Parole nuove al giorno</span><span class="hint">Più parole nuove oggi significano più ripassi nei prossimi giorni.</span>${seg('newPerDay', [5,10,15,20])}</div>
+      <div class="set-row"><span class="lbl">Carte per sessione</span>${seg('sessionLen', [10,20,30])}</div>
+      <div class="set-row"><div class="switch-row"><div><div class="lbl">Italiano sempre visibile</div><div class="hint">Se spento, la traduzione si apre con un tocco.</div></div><button class="switch" role="switch" data-act="toggle-it" aria-checked="${s.showIt}" aria-label="Italiano sempre visibile"></button></div></div>
+      <div class="set-row"><span class="lbl">Pronuncia</span>${seg('voice', ['en-US','en-GB'], v => v === 'en-US' ? 'Americana' : 'Britannica')}</div>
+      <div class="set-row"><span class="hint">I progressi restano salvati in questo browser, su questo dispositivo.</span><button class="danger" data-act="reset-all">Cancella tutti i progressi</button></div>
+    </div>`);
+}
+
+/* ---------- Eventi ---------- */
+let resetArm = null;
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, [data-word]'); if (!t) return;
+  const d = t.dataset;
+  if (d.speak) { e.stopPropagation(); speak(d.speak); return; }
+  if (d.tab) { ui.tab = d.tab; saveUi(); render(); window.scrollTo(0, 0); return; }
+  if (d.info) { const [h, p] = INFO[d.info](); openSheet(`<div class="sh-head"><h3>${h}</h3><button class="close" data-act="close-sheet" aria-label="Chiudi">${I.x}</button></div><p style="margin:0;color:var(--fg2);font-size:15px;line-height:1.5">${p}</p>`); return; }
+  if (d.rate) { rate(d.rate); return; }
+  if (d.opt && qz) {
+    const q = qz.qs[qz.i]; if (q.done) return;
+    if (q.type === 'se') { q.sel = q.sel.includes(d.opt) ? q.sel.filter(x => x !== d.opt) : q.sel.length < 2 ? [...q.sel, d.opt] : q.sel; renderQ(); }
+    else { q.sel = [d.opt]; answerQ(); }
+    return;
+  }
+  if (d.filter) { ui.filter = d.filter; saveUi(); render(); return; }
+  if (d.mode) { ui.quizMode = d.mode; saveUi(); render(); return; }
+  if (d.qlen) { ui.quizLen = +d.qlen; saveUi(); render(); return; }
+  if (d.set) { const v = isNaN(+d.val) ? d.val : +d.val; S.settings[d.set] = v; save(); render(); openSettings(); return; }
+  if (d.word && !d.act) { openWord(d.word); return; }
+  switch (d.act) {
+    case 'settings': openSettings(); break;
+    case 'close-sheet': closeSheet(); break;
+    case 'start-normal': startStudy('normal'); break;
+    case 'start-hard': startStudy('hard'); break;
+    case 'start-more': startStudy('more'); break;
+    case 'start-ahead': startStudy('ahead'); break;
+    case 'study-list': $('#layer').innerHTML = ''; qz = null; startStudy('list', d.words.split(',')); break;
+    case 'quiz-session': { const ws = d.words.split(',').filter(Boolean); $('#layer').innerHTML = ''; sess = null; startQuiz(ui.quizMode, Math.min(10, Math.max(ws.length, 1)), ws); break; }
+    case 'flip': flip(); break;
+    case 'show-it': sess ? (sess.showIt = true, $('#back').innerHTML = backFace(BY[sess.cur], true)) : null; break;
+    case 'close-study': case 'close-quiz': closeOverlay(); break;
+    case 'quick-quiz': startQuiz('mix', 5); break;
+    case 'start-quiz': startQuiz(ui.quizMode, ui.quizLen); break;
+    case 'q-check': answerQ(); break;
+    case 'q-next': if (qz.i + 1 < qz.qs.length) { qz.i++; renderQ(); $('#qs').scrollTop = 0; } else finishQuiz(); break;
+    case 'toggle-it': S.settings.showIt = !S.settings.showIt; save(); t.setAttribute('aria-checked', S.settings.showIt); break;
+    case 'reset-word': delete S.cards[d.w]; save(); closeSheet(); render(); toast(`Progressi di «${d.w}» azzerati`); break;
+    case 'reset-all':
+      if (resetArm && Date.now() - resetArm < 4000) { S = defaults(); save(); resetArm = null; closeSheet(); render(); toast('Progressi cancellati'); }
+      else { resetArm = Date.now(); t.textContent = 'Tocca di nuovo per cancellare tutto'; setTimeout(() => { if (t.isConnected) t.textContent = 'Cancella tutti i progressi'; }, 4000); }
+      break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if ($('#scrim') && e.key === 'Escape') return closeSheet();
+  if (sess && $('#study')) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (!sess.flipped) flip(); }
+    else if (sess.flipped && ['1','2','3'].includes(e.key)) rate(['again','hard','easy'][+e.key - 1]);
+  }
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !sess && !qz) render(); });
+render();
+</script>
+
+<script>if ('serviceWorker' in navigator) { addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); }</script>
+</body>
+</html>
