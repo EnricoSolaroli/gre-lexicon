@@ -522,16 +522,27 @@ const speakBtn = w => ('speechSynthesis' in window) ? `<button class="speak" dat
 const markEx = ex => esc(ex).replace(/\*([^*]+)\*/, '<mark>$1</mark>');
 
 /* ---------- Audio ---------- */
+let VOICES = [];
+const loadVoices = () => { try { VOICES = speechSynthesis.getVoices() || []; } catch(e) {} };
 function speak(w){
   try {
+    const ss = window.speechSynthesis;
+    if (!VOICES.length) loadVoices();
     const u = new SpeechSynthesisUtterance(w);
-    u.lang = S.settings.voice; u.rate = 0.88;
-    const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_','-').startsWith(u.lang));
-    if (v.length) u.voice = v.find(x => /samantha|daniel|google|enhanced|premium/i.test(x.name)) || v[0];
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
+    u.lang = S.settings.voice; u.rate = 0.88; u.volume = 1;
+    const v = VOICES.filter(x => x.lang && x.lang.replace('_','-').toLowerCase().startsWith(u.lang.toLowerCase()));
+    if (v.length) u.voice = v.find(x => x.localService && /samantha|daniel|karen|arthur|enhanced|premium/i.test(x.name)) || v.find(x => x.localService) || v[0];
+    let started = false;
+    u.onstart = () => { started = true; };
+    // Su iOS cancel() subito prima di speak() può far saltare la lettura: si annulla solo se c'è davvero qualcosa in corso.
+    if (ss.speaking || ss.pending) ss.cancel();
+    if (ss.paused) ss.resume();
+    ss.speak(u);
+    setTimeout(() => { if (!started && !ss.speaking) toast("Nessun audio: controlla che l'iPhone non sia in silenzioso e alza il volume"); }, 1500);
   } catch(e) { toast('Audio non disponibile su questo dispositivo'); }
 }
-try { speechSynthesis.getVoices(); } catch(e) {}
+loadVoices();
+try { speechSynthesis.addEventListener('voiceschanged', loadVoices); } catch(e) {}
 
 /* ---------- Toast & sheet ---------- */
 let toastT;
